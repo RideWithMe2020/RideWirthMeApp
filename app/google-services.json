@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "207748903678",
+    "firebase_url": "https://ridewithmeapplication.firebaseio.com",
+    "project_id": "ridewithmeapplication",
+    "storage_bucket": "ridewithmeapplication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207748903678:android:bd0b0d287603db70c5ebaf",
+        "android_client_info": {
+          "package_name": "com.example.ridewithme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "207748903678-ch8m6pabcnv35gbi5d0bdq7as5lg1onc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3TOOo3HEx6AkN8vZH26_x5cH3pyH4CIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "207748903678-ch8m6pabcnv35gbi5d0bdq7as5lg1onc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

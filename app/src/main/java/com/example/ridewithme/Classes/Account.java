@@ -12,6 +12,7 @@ public class Account {
     private ArrayList<Lonlat> location;
 
     public Account() {
+
     }
 
     public Account(String name, String lastName, String email, String password, ArrayList<Double> location, String username) {
