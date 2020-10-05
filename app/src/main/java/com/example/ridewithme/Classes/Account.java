@@ -17,8 +17,8 @@ public class Account {
 
     public Account(String name, String lastName, String email, String password, ArrayList<Double> location, String username) {
         this.username = username;
-        this.name = setName();
-        this.lastName = setLastName();
+        this.name = name;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.location = new ArrayList<>();

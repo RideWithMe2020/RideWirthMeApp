@@ -34,8 +34,8 @@ public class LoginActivity extends AppCompatActivity {
         DatabaseReference myRef = database.getReference("account");
 
         //***********johny***********//
-//        login_EDT_username.setOnClickListener(fillAccount);
-//        login_EDT_password.setOnClickListener(fillAccount);
+       login_BTN_login.setOnClickListener(fillAccount);
+       login_BTN_register.setOnClickListener(fillAccount);
 
 
     }
@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void buttonClicked(View view) {
 
+        Log.d("johny", "buttonClicked: clicked " + view.getTag().toString());
 
         if (view.getTag().toString().equals("login")) {
             if (checkUserValid()) {
@@ -61,19 +62,21 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("stas","error message");
             }
 
-        } else if (((String)view.getTag()).equals("register")) {
-
+        } else if ((view.getTag().toString().equals("register"))) {
+            Intent intent = new Intent(this, RegisterActivity.class);
+            this.startActivity(intent);
         }
 
     }
 
     private boolean checkUserValid() {
-        for (Account account: accounts) {
+        /*for (Account account: accounts) {
             if((login_EDT_username.getText().toString().equals(account.getEmail())) && (login_EDT_password.getText().toString().equals(account.getPassword()))){
                 return true;
             }
         }
-        return false;
+        return false;*/
+        return  true;
     }
 
 
