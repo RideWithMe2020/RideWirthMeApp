@@ -2,13 +2,9 @@ package com.example.ridewithme;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.example.ridewithme.Classes.Account;
 import com.google.android.material.button.MaterialButton;
@@ -23,21 +19,21 @@ public class LoginActivity extends AppCompatActivity {
     private EditText login_EDT_password;
     private MaterialButton login_BTN_login;
     private MaterialButton login_BTN_register;
-    private TextView login_LBL_errorMessage;
     private HashSet<Account> accounts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        findViews();
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("account");
 
+        //***********johny***********//
+//        login_EDT_username.setOnClickListener(fillAccount);
+//        login_EDT_password.setOnClickListener(fillAccount);
 
 
-        login_BTN_login.setOnClickListener(fillAccount);
-        login_BTN_register.setOnClickListener(fillAccount);
     }
 
 
@@ -48,33 +44,21 @@ public class LoginActivity extends AppCompatActivity {
         }
     };
 
-
-    // add register method
     private void buttonClicked(View view) {
-        Log.d("stas","error");
-        if (view.getTag().toString().equals("login")) {
-            if (checkUserValid()) {
-                 Intent intent = new Intent(this, StartUp.class);
-                this.startActivity(intent);
-                finish();
-            } else {
-                login_LBL_errorMessage.setText("Username or password are invalid");
-                Log.d("stas","error message");
-            }
 
-        } else if (((String)view.getTag()).equals("register")) {
+
+        if(view.getTag().equals("login")){
+
+
+        }else if (view.getTag().equals("register")){
 
         }
 
     }
 
-    private boolean checkUserValid() {
-        for (Account account : accounts) {
-            if ((account.getEmail().equals(login_EDT_username.getText().toString()) && (account.getPassword().equals(login_EDT_password.getText().toString())))) {
-                return true;
-            }
-        }
-        return false;
+    private void getAccountsFromSP() {
+
+
     }
 
 
@@ -83,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
         login_EDT_password = findViewById(R.id.login_EDT_password);
         login_BTN_login = findViewById(R.id.login_BTN_login);
         login_BTN_register = findViewById(R.id.login_BTN_register);
-        login_LBL_errorMessage = findViewById(R.id.login_LBL_errorMessage);
 
 
     }
