@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("account");
 
-
+        //***********johny***********//
 //        login_EDT_username.setOnClickListener(fillAccount);
 //        login_EDT_password.setOnClickListener(fillAccount);
 

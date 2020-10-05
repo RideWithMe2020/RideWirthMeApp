@@ -57,7 +57,7 @@
         android:layout_below="@id/login_EDT_password"
         android:layout_centerInParent="true"
         android:layout_marginTop="25dp"
-
+        android:tag="login"
         />
 
     <com.google.android.material.button.MaterialButton
@@ -69,6 +69,7 @@
         android:layout_below="@id/login_BTN_login"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
+        android:tag="register"
         />
 
     <TextView
