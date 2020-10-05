@@ -9,6 +9,7 @@
     >
 
     <TextView
+        android:id="@+id/login_LBL_"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="RIDE WITH ME"
@@ -48,6 +49,18 @@
         android:textColorHint="#05000C"
         />
 
+    <TextView
+        android:id="@+id/login_LBL_errorMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tag="error message"
+        android:layout_below="@id/login_EDT_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text=""
+        android:textColor="#EE0000"
+        />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/login_BTN_login"
         android:layout_width="wrap_content"
@@ -57,6 +70,7 @@
         android:layout_below="@id/login_EDT_password"
         android:layout_centerInParent="true"
         android:layout_marginTop="25dp"
+        android:tag="login"
 
         />
 
@@ -69,6 +83,7 @@
         android:layout_below="@id/login_BTN_login"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
+        android:tag="register"
         />
 
     <TextView
