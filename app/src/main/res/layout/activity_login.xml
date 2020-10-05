@@ -48,6 +48,17 @@
         android:textColorHint="#05000C"
         />
 
+    <TextView
+        android:id="@+id/login_LBL_errorMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_EDT_password"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textColor="#EE0000"
+
+        />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/login_BTN_login"
         android:layout_width="wrap_content"
