@@ -21,17 +21,15 @@
 
 
     <EditText
-        android:id="@+id/login_EDT_username"
+        android:id="@+id/login_EDT_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Username"
+        android:hint="Email"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="150dp"
         android:textSize="45sp"
-        android:digits="QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789"
         android:textColorHint="#05000C"
         android:maxLines="1"
-        android:maxLength="15"
         />
 
     <EditText
@@ -40,7 +38,7 @@
         android:layout_height="wrap_content"
         android:hint="Password"
         android:layout_centerInParent="true"
-        android:layout_below="@id/login_EDT_username"
+        android:layout_below="@id/login_EDT_email"
         android:layout_marginTop="25dp"
         android:textSize="45sp"
         android:textFontWeight="15"
@@ -95,4 +93,14 @@
         android:layout_marginTop="20dp"
         android:layout_alignParentBottom="true"
         />
+
+    <ProgressBar
+        android:id="@+id/login_PGB_pgb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="85dp"></ProgressBar>
+
 </RelativeLayout>

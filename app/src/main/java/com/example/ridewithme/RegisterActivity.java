@@ -1,6 +1,6 @@
 package com.example.ridewithme;
 
-import android.app.ProgressDialog;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,14 +9,23 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ridewithme.Classes.Account;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -25,21 +34,23 @@ public class RegisterActivity extends AppCompatActivity
 {
     final Handler handler = new Handler(Looper.getMainLooper());
     private EditText register_EDT_name;
-    private EditText register_EDT_lastName;
-    private EditText register_EDT_username;
     private EditText register_EDT_email;
     private EditText register_EDT_password;
     private MaterialButton register_BTN_create;
     private TextView       register_TXT_login;
+    private ProgressBar register_PGB_pgb;
     private Account account;
     private Set<Account> set=null;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore fStore;
+    private String userID;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         findViews();
         checkValueOfEDT(register_EDT_name,register_EDT_password,register_EDT_email);
-
+        firebaseAuth= FirebaseAuth.getInstance();
         register_BTN_create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,7 +58,11 @@ public class RegisterActivity extends AppCompatActivity
             }
         });
 
-
+        /*if(firebaseAuth.getCurrentUser()!=null)
+        {
+            startActivity(new Intent(getApplicationContext(),StartUp.class));
+                finish();
+        }*/
 
 
         // addAccountsToFB();
@@ -87,13 +102,11 @@ public class RegisterActivity extends AppCompatActivity
 
     private void findViews() {
         register_EDT_name=findViewById(R.id.register_EDT_name);
-        register_EDT_lastName=findViewById(R.id.register_EDT_lastName);
-        register_EDT_username=findViewById(R.id.register_EDT_username);
         register_EDT_email=findViewById(R.id.register_EDT_email);
         register_EDT_password= findViewById(R.id.register_EDT_password);
         register_BTN_create=findViewById(R.id.register_BTN_create);
         register_TXT_login =findViewById(R.id.register_TXT_login);
-
+        register_PGB_pgb = findViewById(R.id.register_PGB_pgb);
     }
 
 
@@ -105,19 +118,17 @@ public class RegisterActivity extends AppCompatActivity
     private Account createAccount() {
 
         String name=register_EDT_name.getText().toString();
-        String lastName= register_EDT_lastName.getText().toString();
         String email= register_EDT_email.getText().toString();
-        String userName= register_EDT_username.getText().toString();
         String password= register_EDT_password.getText().toString();
 
 
-        Account user = new Account(name,lastName,email,password,null,userName);
+        Account user = new Account(name,email,password,null);
 
         Log.d("johny", "createAccount: create acounts success " + user.getName());
         return  user;
     }
 
-    private void checkValueOfEDT(EditText name, EditText password, EditText email) {
+    public void checkValueOfEDT(EditText name, EditText password, EditText email) {
         if (isEmpty(password) || password.length() < 4 || password.length() > 10) {
             password.setError("between 4 and 10 alphanumeric characters");
         }
@@ -147,12 +158,13 @@ public class RegisterActivity extends AppCompatActivity
         }
 
         register_BTN_create.setEnabled(false);
-
+/*
         final ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Creating Account...");
-        progressDialog.show();
+        progressDialog.show();*/
+            register_PGB_pgb.setVisibility(View.VISIBLE);
 
 /*        String name = register_EDT_name.getText().toString();
         String email = register_EDT_email.getText().toString();
@@ -162,7 +174,24 @@ public class RegisterActivity extends AppCompatActivity
         account = createAccount();
         Log.d("johny", "signup:  account name is" + account.getName());
 
-        set = getSetFromFB();
+        firebaseAuth.createUserWithEmailAndPassword(account.getEmail(),account.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+            if(task.isSuccessful())
+            {
+                Toast.makeText(getApplicationContext(),"User created in FB",Toast.LENGTH_SHORT).show();
+                userID = firebaseAuth.getCurrentUser().getUid();
+                 DocumentReference myRef = fStore.collection("users").document(userID);
+                onSignupSuccess();
+            }
+            else {
+                onSignupFailed();
+            }
+
+            }
+        });
+
+   /*     set = getSetFromFB();
         addAccountToSet(set,account);
         // addAccountsToFB();
         if(set!=null)
@@ -172,9 +201,9 @@ public class RegisterActivity extends AppCompatActivity
                 Log.d("johny", "signup:  name is" + user.getName());
             }
         }
+*/
 
-
-      handler.postDelayed(
+     /* handler.postDelayed(
                 new Runnable() {
                     public void run() {
                         // On complete call either onSignupSuccess or onSignupFailed
@@ -183,7 +212,7 @@ public class RegisterActivity extends AppCompatActivity
                         // onSignupFailed();
                         progressDialog.dismiss();
                     }
-                }, 3000);
+                }, 3000);*/
     }
 
 
@@ -194,8 +223,7 @@ public class RegisterActivity extends AppCompatActivity
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
+        Toast.makeText(getBaseContext(), "Sign up failed", Toast.LENGTH_LONG).show();
         register_BTN_create.setEnabled(true);
     }
 

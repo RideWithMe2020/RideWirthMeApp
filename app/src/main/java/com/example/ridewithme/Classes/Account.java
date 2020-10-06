@@ -5,8 +5,7 @@ import java.util.ArrayList;
 public class Account {
 
     private String name;
-    private String lastName;
-    private String username;
+
     private String email;
     private String password;
     private ArrayList<Lonlat> location;
@@ -15,10 +14,8 @@ public class Account {
 
     }
 
-    public Account(String name, String lastName, String email, String password, ArrayList<Double> location, String username) {
-        this.username = username;
+    public Account(String name, String email, String password, ArrayList<Double> location) {
         this.name = name;
-        this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.location = new ArrayList<>();
@@ -28,9 +25,6 @@ public class Account {
         return name;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
 
     public String getEmail() {
         return email;
@@ -44,17 +38,11 @@ public class Account {
         return location;
     }
 
-    public String getUsername() {
-        return username;
-    }
 
     public String setName() {
         return name;
     }
 
-    public String setLastName() {
-        return lastName;
-    }
 
     public String setEmail() {
         if (!email.contains("[a-z][A-Z]@gmail.com") || !email.contains("[a-z][A-Z]@walla.com")
@@ -70,8 +58,5 @@ public class Account {
         return password;
     }
 
-    public Account setUsername(String username) {
-        this.username = username;
-        return this;
-    }
+
 }
