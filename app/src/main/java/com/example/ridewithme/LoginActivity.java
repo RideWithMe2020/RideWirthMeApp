@@ -47,7 +47,6 @@ public class LoginActivity extends AppCompatActivity {
         //***********johny***********//
         login_BTN_login.setOnClickListener(fillAccount);
         login_BTN_register.setOnClickListener(fillAccount);
-        //***********johny***********//
 
 
 
