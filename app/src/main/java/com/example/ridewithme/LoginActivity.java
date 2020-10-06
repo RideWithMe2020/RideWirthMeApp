@@ -33,7 +33,6 @@ public class LoginActivity extends AppCompatActivity {
     private MaterialButton login_BTN_register;
     private TextView login_LBL_errorMessage;
     private ProgressBar login_PGB_pgb;
-    private HashSet<Account> accounts;
     FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

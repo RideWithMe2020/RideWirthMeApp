@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ridewithme.Classes.Account;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthResult;
@@ -27,7 +29,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class RegisterActivity extends AppCompatActivity
@@ -41,6 +45,7 @@ public class RegisterActivity extends AppCompatActivity
     private ProgressBar register_PGB_pgb;
     private Account account;
     private Set<Account> set=null;
+    Map<String,Object> list = null;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore fStore;
     private String userID;
@@ -50,38 +55,22 @@ public class RegisterActivity extends AppCompatActivity
         setContentView(R.layout.activity_register);
         findViews();
         checkValueOfEDT(register_EDT_name,register_EDT_password,register_EDT_email);
+        register_PGB_pgb.setVisibility(View.GONE);
+
         firebaseAuth= FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
         register_BTN_create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                signup();
             }
         });
-
-        /*if(firebaseAuth.getCurrentUser()!=null)
-        {
-            startActivity(new Intent(getApplicationContext(),StartUp.class));
-                finish();
-        }*/
-
-
-        // addAccountsToFB();
-//        register_BTN_create.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                signup();
-//            }
-//
-//
-//        });
-
-     /*   register_TXT_login.setOnClickListener(new View.OnClickListener() {
+        register_TXT_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Finish the registration screen and return to the Login activity
                 finish();
             }
-        });*/
+        });
     }
 
     boolean isEmpty(EditText text) {
@@ -158,19 +147,7 @@ public class RegisterActivity extends AppCompatActivity
         }
 
         register_BTN_create.setEnabled(false);
-/*
-        final ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
-        progressDialog.show();*/
             register_PGB_pgb.setVisibility(View.VISIBLE);
-
-/*        String name = register_EDT_name.getText().toString();
-        String email = register_EDT_email.getText().toString();
-        String password = register_EDT_password.getText().toString();*/
-
-        // TODO: Implement your own signup logic here.
         account = createAccount();
         Log.d("johny", "signup:  account name is" + account.getName());
 
@@ -181,7 +158,21 @@ public class RegisterActivity extends AppCompatActivity
             {
                 Toast.makeText(getApplicationContext(),"User created in FB",Toast.LENGTH_SHORT).show();
                 userID = firebaseAuth.getCurrentUser().getUid();
+                //-------- insert to Cloud FireStore --> the set of every account with unique userID---------------- //
                  DocumentReference myRef = fStore.collection("users").document(userID);
+                 myRef.set(account).addOnSuccessListener(new OnSuccessListener<Void>() {
+                     @Override
+                     public void onSuccess(Void aVoid) {
+                         Log.d("johny", "onSuccess: account upload to firestore");
+                     }
+                 }).addOnFailureListener(new OnFailureListener() {
+                     @Override
+                     public void onFailure(@NonNull Exception e) {
+                         Log.d("johny", "onFailure: failed upload to firestore");
+
+                     }
+                 });
+              //list =  insertAccountToSet(account);
                 onSignupSuccess();
             }
             else {
@@ -191,28 +182,12 @@ public class RegisterActivity extends AppCompatActivity
             }
         });
 
-   /*     set = getSetFromFB();
-        addAccountToSet(set,account);
-        // addAccountsToFB();
-        if(set!=null)
-        {
-            for (Account user:set)
-            {
-                Log.d("johny", "signup:  name is" + user.getName());
-            }
-        }
-*/
+    }
 
-     /* handler.postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);*/
+    private Map<String,Object> insertAccountToSet(Account user_account) {
+        list = new HashMap<>();
+        list.put(userID,user_account);
+        return list;
     }
 
 
@@ -225,6 +200,7 @@ public class RegisterActivity extends AppCompatActivity
     public void onSignupFailed() {
         Toast.makeText(getBaseContext(), "Sign up failed", Toast.LENGTH_LONG).show();
         register_BTN_create.setEnabled(true);
+        register_PGB_pgb.setVisibility(View.GONE);
     }
 
     public boolean validate() {
