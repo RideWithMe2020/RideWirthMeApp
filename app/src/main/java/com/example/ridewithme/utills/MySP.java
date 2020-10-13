@@ -1,4 +1,4 @@
-package com.example.ridewithme;
+package com.example.ridewithme.utills;
 
 import android.content.Context;
 import android.content.SharedPreferences;

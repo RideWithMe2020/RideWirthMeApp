@@ -1,4 +1,4 @@
-package com.example.ridewithme;
+package com.example.ridewithme.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+
+import com.example.ridewithme.R;
 
 public class MainActivity extends AppCompatActivity {
    final Handler handler = new Handler(Looper.getMainLooper());

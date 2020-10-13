@@ -20,6 +20,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
@@ -41,5 +42,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.5.0'
 
     //Google maps
+    implementation 'com.github.jd-alexander:library:1.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
+    implementation 'com.google.android.gms:play-services-places:17.0.0'
+    implementation "com.google.android.libraries.places:places:2.4.0"
+    implementation 'com.google.maps.android:android-maps-utils:0.5'
+    compile 'com.google.android.gms:play-services-auth:18.1.0'
 }
