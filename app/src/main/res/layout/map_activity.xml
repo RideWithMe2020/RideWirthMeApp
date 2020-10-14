@@ -10,7 +10,7 @@
         android:layout_weight="1">
 
         <fragment
-            android:id="@+id/mapNearBy"
+            android:id="@+id/map_MAP_google_map"
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -24,6 +24,7 @@
         >
             <EditText
                 android:id="@+id/map_EDT_place_autocomplete"
+                android:tag="search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
@@ -89,6 +90,7 @@
             >
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/map_BTN_start"
+                android:tag="start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/places_autocomplete_fullscreen_background"
@@ -96,6 +98,7 @@
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/map_BTN_stop"
+                android:tag="stop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/places_autocomplete_fullscreen_background"
@@ -107,6 +110,7 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/map_BTN_directions"
+            android:tag="direction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -122,6 +126,7 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/map_BTN_state_elite"
+            android:tag="elite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -133,6 +138,7 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/map_BTN_gps"
+            android:tag="gps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

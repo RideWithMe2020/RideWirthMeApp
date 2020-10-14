@@ -125,10 +125,10 @@ public class LocationService extends Service {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
-                        Log.d("pttt", "stop Location Callback removed.");
+                        Log.d("johny", "stop Location Callback removed.");
                         stopSelf();
                     } else {
-                        Log.d("pttt", "stop Failed to remove Location Callback.");
+                        Log.d("johny", "stop Failed to remove Location Callback.");
                     }
                 }
             });

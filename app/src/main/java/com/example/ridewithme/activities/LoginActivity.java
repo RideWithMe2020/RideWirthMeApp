@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void onLoginFailed(Task<AuthResult> task) {
-        Toast.makeText(getBaseContext(), "login failed -> " +task.getException() , Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "login failed -> username or password is incorrect " , Toast.LENGTH_LONG).show();
         login_BTN_login.setEnabled(true);
         login_PGB_pgb.setVisibility(View.GONE);
 

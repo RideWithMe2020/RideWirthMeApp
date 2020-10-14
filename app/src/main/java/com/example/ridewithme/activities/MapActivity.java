@@ -3,7 +3,6 @@ package com.example.ridewithme.activities;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
@@ -12,23 +11,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.RequestResult;
+import com.akexorcist.googledirection.constant.TransportMode;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.model.Info;
+import com.akexorcist.googledirection.model.Leg;
+import com.akexorcist.googledirection.model.Route;
+import com.akexorcist.googledirection.util.DirectionConverter;
 import com.example.ridewithme.LocationService;
 import com.example.ridewithme.R;
-import com.example.ridewithme.directionhelpers.FetchURL;
-import com.example.ridewithme.directionhelpers.TaskLoadedCallback;
+
 import com.example.ridewithme.utills.MyLoc;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -43,42 +54,35 @@ import com.google.android.libraries.places.api.model.Place;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
-        /////////////////-------stuf2-----------//////////////////
-
-        protected LatLng start = null;
-        protected LatLng end = null;
-
-        //to get location permissions.
-        private final static int LOCATION_REQUEST_CODE = 23;
-        boolean locationPermission = false;
-
-        //to get Autocomplete
-        private final static int AUTOCOMPLETE_REQUEST_CODE = 100;
-        //polyline object
-        private List<Polyline> polylines = null;
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 
-        //////////////////////////stuf1////////////////
-        private final int LOCATION_PERMISSIONS_REQUEST_CODE = 125;
+
+
+    //////////////////////////variables////////////////
+    private final static int AUTOCOMPLETE_REQUEST_CODE = 100;
+    private final int LOCATION_PERMISSIONS_REQUEST_CODE = 125;
+    String serverKey = "AIzaSyCI-4RaDocwneRsw2ryTRPMf7NzGV-F1CE"; // Api Key For Google Direction API \\
 
         private GoogleMap mMap;
-        private MarkerOptions place1, place2,myPlace;
-        private FloatingActionButton map_BTN_directions,map_BTN_gps,map_BTN_start,map_BTN_stop;
+        private MarkerOptions place1=null, place2;
+        private FloatingActionButton map_BTN_directions,map_BTN_gps,map_BTN_start,map_BTN_stop,map_BTN_state_elite;
         private AutocompleteSupportFragment autocompleteFragment ;
         private EditText map_EDT_place_autocomplete;
-    //android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        private TextView map_LBL_distance,map_LBL_time;
         private Polyline currentPolyline;
         private LocalBroadcastManager localBroadcastManager;
 
         public static final String BROADCAST_NEW_LOCATION_DETECTED = "com.example.ridewithme.NEW_LOCATION_DETECTED";
-        double[] valuesLatLon = new double[2];
-        private LatLng location;
-        private BroadcastReceiver myReceiver = new BroadcastReceiver() {
+        private LatLng location,destination;
+    //////////////////////////variables////////////////
+
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                         if (intent.getAction().equals(BROADCAST_NEW_LOCATION_DETECTED)) {
@@ -99,84 +103,86 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 Log.d("johny", "run: is on + lati = " +lastLocation.getLatitude() + ", longi= " + lastLocation.getLongitude() );
                               /*  mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(),
                                         lastLocation.getLongitude()),15));*/
-
-                                place1 = new MarkerOptions().position(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())).title("Home");
-                           //     place2 = new MarkerOptions().position(new LatLng(32.088882, 34.848297)).title("stas_house");
+                            if(place1==null)
+                            {
+                                place1 = new MarkerOptions().position(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())).title("My_Loc");
                                 mMap.addMarker(place1);
-                          //      mMap.addMarker(place2);
+                            }
                         }
                 });
         }
 
         @Override
         protected void onCreate(@Nullable Bundle savedInstanceState) {
-                super.onCreate(savedInstanceState);
-                setContentView(R.layout.map_activity);
-                findViews();
-                askLocationPermissions();
-                map_BTN_directions.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                                new FetchURL(MapActivity.this).execute(getUrl(place1.getPosition(), place2.getPosition(),
-                                        "bicycle"), "bicycle");
-                        }
-                });
-                map_BTN_gps.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location,15));
-                                //myPlace = new MarkerOptions().position(new LatLng())
-                        }
-                });
-                map_BTN_start.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                                startService();
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.map_activity);
+            findViews();
+            askLocationPermissions();
+            init();
 
-                        }
-                });
-                map_BTN_stop.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                                stopService();
-                        }
-                });
-                Places.initialize(getApplicationContext(),"AIzaSyCI-4RaDocwneRsw2ryTRPMf7NzGV-F1CE");
-                map_EDT_place_autocomplete.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                                List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS,Place.Field.NAME,
-                                        Place.Field.LAT_LNG);
-                                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY,fieldList).build(MapActivity.this);
-                                startActivityForResult(intent,AUTOCOMPLETE_REQUEST_CODE);
-
-
-                        }
-                });
-
-               /* autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
-                autocompleteFragment.setCountry("IL");
-
-                autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
-                // Set up a PlaceSelectionListener to handle the response.
-                autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-                        @Override
-                        public void onPlaceSelected(@NonNull Place place) {
-                                Log.d("johny", "Place: " + place.getName() + ", " + place.getId());
-
-                        }
-
-                        @Override
-                        public void onError(Status status) {
-                                Log.d("johny", "onError: " + status.getStatus());
-                        }
-                });*/
-
-                MapFragment mapFragment = (MapFragment) getFragmentManager()
-                        .findFragmentById(R.id.mapNearBy);
-                mapFragment.getMapAsync(this);
+            MapFragment mapFragment = (MapFragment) getFragmentManager()
+                    .findFragmentById(R.id.map_MAP_google_map);
+            mapFragment.getMapAsync(this);
         }
+
+    private void init() {
+        map_BTN_directions.setOnClickListener(myViewLister);
+        map_BTN_gps.setOnClickListener(myViewLister);
+        map_BTN_start.setOnClickListener(myViewLister);
+        map_BTN_stop.setOnClickListener(myViewLister);
+        map_BTN_state_elite.setOnClickListener(myViewLister);
+        Places.initialize(getApplicationContext(), serverKey);
+        map_EDT_place_autocomplete.setOnClickListener(myViewLister);
+    }
+
+    private View.OnClickListener myViewLister = new View.OnClickListener() {
         @Override
+        public void onClick(View view) {
+            buttonClicked(view);
+        }
+    };
+
+    private void buttonClicked(View view) {
+        if(view.getTag().toString().equals("start"))
+        {
+            startService();
+        }
+        else if(view.getTag().toString().equals("stop"))
+        {
+            stopService();
+
+        }
+        else if(view.getTag().toString().equals("direction"))
+        {
+            getDestinationInfo(destination);
+
+        }
+        else if(view.getTag().toString().equals("elite"))
+        {
+            changeMapType();
+
+        }
+        else if(view.getTag().toString().equals("gps"))
+        {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+
+        }
+        else if(view.getTag().toString().equals("search"))
+        {
+            searchPlace();
+
+        }
+
+    }
+
+    private void searchPlace() {
+        List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS, Place.Field.NAME,
+                Place.Field.LAT_LNG);
+        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldList).build(MapActivity.this);
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+    }
+
+    @Override
         protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
                 if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
                         if (resultCode == RESULT_OK) {
@@ -197,6 +203,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private void addDestPlaceInMap(Intent data) {
         Place place = Autocomplete.getPlaceFromIntent(data);
         Log.d("johny", "Place: " + place.getName() + ", " + place.getId());
+        destination= place.getLatLng();
         map_EDT_place_autocomplete.setText(place.getAddress());
         place2 = new MarkerOptions().position(place.getLatLng()).title("Dest");
         mMap.addMarker(place2);
@@ -211,23 +218,88 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 map_EDT_place_autocomplete = findViewById(R.id.map_EDT_place_autocomplete);
                 autocompleteFragment = (AutocompleteSupportFragment)
                         getSupportFragmentManager().findFragmentById(R.id.map_EDT_place_autocomplete);
+         map_LBL_distance=findViewById(R.id.map_LBL_distance);
+         map_LBL_time    =findViewById(R.id.map_LBL_time);
+        map_BTN_state_elite = findViewById(R.id.map_BTN_state_elite);
+        }
+    private void getDestinationInfo(LatLng latLngDestination) {
+       // progressDialog();
+        final LatLng origin = location;
+        final LatLng destination = latLngDestination;
+        //-------------Using AK Exorcist Google Direction Library---------------\\
+        GoogleDirection.withServerKey(serverKey)
+                .from(origin)
+                .to(destination)
+                .transportMode(TransportMode.BICYCLING)
+                .execute(new DirectionCallback() {
+                    @Override
+                    public void onDirectionSuccess(Direction direction, String rawBody) {
+                      //  dismissDialog();
+                        String status = direction.getStatus();
+                        if (status.equals(RequestResult.OK)) {
+                            Route route = direction.getRouteList().get(0);
+                            Leg leg = route.getLegList().get(0);
+                            Info distanceInfo = leg.getDistance();
+                            Info durationInfo = leg.getDuration();
+                            String distance = distanceInfo.getText();
+                            String duration = durationInfo.getText();
+
+                            //------------Displaying Distance and Time-----------------\\
+                            showingDistanceTime(distance, duration); // Showing distance and time to the user in the UI \\
+
+                            //--------------Drawing Path-----------------\\
+                            ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
+                            PolylineOptions polylineOptions = DirectionConverter.createPolyline(getApplicationContext(),
+                                        directionPositionList, 5, Color.BLUE);
+                            mMap.addPolyline(polylineOptions);
+                            //--------------------------------------------\\
+
+                            //-----------Zooming the map according to marker bounds-------------\\
+                            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                            builder.include(origin);
+                            builder.include(destination);
+                            LatLngBounds bounds = builder.build();
+
+                            int width = getResources().getDisplayMetrics().widthPixels;
+                            int height = getResources().getDisplayMetrics().heightPixels;
+                            int padding = (int) (width * 0.20); // offset from edges of the map 10% of screen
+
+                            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+                            mMap.animateCamera(cu);
+                            //------------------------------------------------------------------\\
+
+                        } else if (status.equals(RequestResult.NOT_FOUND)) {
+                            Toast.makeText(getApplicationContext(), "No routes exist", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onDirectionFailure(Throwable t) {
+                        // Do something here
+                    }
+                });
+        //-------------------------------------------------------------------------------\\
+
+    }
+    private void changeMapType() {
+        if (mMap != null) {
+            int MapType = mMap.getMapType();
+            if (MapType == 1) {
+                map_BTN_state_elite.setImageResource(R.drawable.ic_satellite_off);
+                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            } else {
+                map_BTN_state_elite.setImageResource(R.drawable.ic_satellite_on);
+                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            }
 
         }
-
-        private void requestPermision() {
-                if (ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(this,
-                                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                LOCATION_REQUEST_CODE);
-                } else {
-                        locationPermission = true;
-                }
+    }
+    private void showingDistanceTime(String distance, String duration) {
+                map_LBL_time.setText(duration);
+                map_LBL_distance.setText(distance);
         }
 
-
-        @Override
+    @Override
         protected void onPause() {
                 super.onPause();
                 localBroadcastManager.unregisterReceiver(myReceiver);
@@ -242,38 +314,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         @Override
         public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
-               /* LatLng ltlng=new LatLng(mMap.getMyLocation().getLatitude(),mMap.getMyLocation().getLongitude());
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
-                        ltlng, 16f);
-                mMap.animateCamera(cameraUpdate);*/
 
-                Log.d("mylog", "Added Markers");
 
         }
-
-        private String getUrl(LatLng origin, LatLng dest, String directionMode) {
-                // Origin of route
-                String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-                // Destination of route
-                String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-                // Mode
-                String mode = "mode=" + directionMode;
-                // Building the parameters to the web service
-                String parameters = str_origin + "&" + str_dest + "&" + mode;
-                // Output format
-                String output = "json";
-                // Building the url to the web service
-                String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
-                return url;
-        }
-
-        @Override
-        public void onTaskDone(Object... values) {
-                if (currentPolyline != null)
-                        currentPolyline.remove();
-                currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
-        }
-
 
         private void startService() {
                 actionToService(LocationService.START_FOREGROUND_SERVICE);
