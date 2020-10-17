@@ -112,7 +112,6 @@ public class LocationService extends Service {
         String json = new Gson().toJson(new MyLoc(lastLocation));
         intent.putExtra("EXTRA_LOCATION", json);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
         notificationBuilder.setContentText("Current speed: " + String.format("%.2f", lastLocation.getSpeed() * 3.6) + " kph");
         final NotificationManager notificationManager = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
@@ -190,7 +189,7 @@ public class LocationService extends Service {
 
     private void notifyToUserForForegroundService() {
         // On notification click
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, MapActivity.class);
         notificationIntent.setAction(MAIN_ACTION);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);

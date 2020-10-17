@@ -67,15 +67,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     //////////////////////////variables////////////////
     private final static int AUTOCOMPLETE_REQUEST_CODE = 100;
     private final int LOCATION_PERMISSIONS_REQUEST_CODE = 125;
-    String serverKey = "AIzaSyCI-4RaDocwneRsw2ryTRPMf7NzGV-F1CE"; // Api Key For Google Direction API \\
-
+   private String serverKey = "AIzaSyCI-4RaDocwneRsw2ryTRPMf7NzGV-F1CE"; // Api Key For Google Direction API \\
         private GoogleMap mMap;
         private MarkerOptions place1=null, place2;
-        private FloatingActionButton map_BTN_directions,map_BTN_gps,map_BTN_start,map_BTN_stop,map_BTN_state_elite;
+        private FloatingActionButton map_BTN_directions,map_BTN_gps,map_BTN_start,map_BTN_stop,map_BTN_state_elite,map_BTN_pause;
         private AutocompleteSupportFragment autocompleteFragment ;
         private EditText map_EDT_place_autocomplete;
         private TextView map_LBL_distance,map_LBL_time;
-        private Polyline currentPolyline;
         private LocalBroadcastManager localBroadcastManager;
 
         public static final String BROADCAST_NEW_LOCATION_DETECTED = "com.example.ridewithme.NEW_LOCATION_DETECTED";
@@ -130,6 +128,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         map_BTN_gps.setOnClickListener(myViewLister);
         map_BTN_start.setOnClickListener(myViewLister);
         map_BTN_stop.setOnClickListener(myViewLister);
+        map_BTN_pause.setOnClickListener(myViewLister);
         map_BTN_state_elite.setOnClickListener(myViewLister);
         Places.initialize(getApplicationContext(), serverKey);
         map_EDT_place_autocomplete.setOnClickListener(myViewLister);
@@ -151,6 +150,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         {
             stopService();
 
+        }
+        else if(view.getTag().toString().equals("pause"))
+        {
+            pauseService();
         }
         else if(view.getTag().toString().equals("direction"))
         {
@@ -221,6 +224,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
          map_LBL_distance=findViewById(R.id.map_LBL_distance);
          map_LBL_time    =findViewById(R.id.map_LBL_time);
         map_BTN_state_elite = findViewById(R.id.map_BTN_state_elite);
+        map_BTN_pause= findViewById(R.id.map_BTN_pause);
         }
     private void getDestinationInfo(LatLng latLngDestination) {
        // progressDialog();

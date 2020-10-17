@@ -103,7 +103,14 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/places_autocomplete_fullscreen_background"
                 android:src="@drawable/stopride" />
-
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/map_BTN_pause"
+                android:tag="pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/places_autocomplete_fullscreen_background"
+                android:src="@drawable/pausepic"
+                />
 
             ></LinearLayout>
 
