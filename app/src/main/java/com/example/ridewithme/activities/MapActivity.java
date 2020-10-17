@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -213,6 +214,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(),15));
     }
 
+    private void validateButtons() {
+        if (isMyServiceRunning(LocationService.class)) {
+            map_BTN_start.setEnabled(false);
+            map_BTN_pause.setEnabled(true);
+            map_BTN_stop.setEnabled(true);
+        } else {
+            map_BTN_start.setEnabled(true);
+            map_BTN_pause.setEnabled(false);
+            map_BTN_stop.setEnabled(false);
+        }
+    }
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        int counter = 0;
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+
+        List<ActivityManager.RunningServiceInfo> runs = manager.getRunningServices(Integer.MAX_VALUE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                counter++;
+                //return true;
+            }
+        }
+
+        Log.d("pttt", "Counter= " + counter);
+        if (counter > 0)
+            return true;
+        return false;
+    }
     private void findViews() {
                 map_BTN_directions = findViewById(R.id.map_BTN_directions);
                 map_BTN_gps =findViewById(R.id.map_BTN_gps);
@@ -324,15 +353,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         private void startService() {
                 actionToService(LocationService.START_FOREGROUND_SERVICE);
+            validateButtons();
         }
 
         private void pauseService() {
-                actionToService(LocationService.PAUSE_FOREGROUND_SERVICE);
-        }
+         actionToService(LocationService.PAUSE_FOREGROUND_SERVICE);
+            validateButtons();
+    }
 
         private void stopService() {
                 actionToService(LocationService.STOP_FOREGROUND_SERVICE);
-        }
+            validateButtons();
+    }
 
         private void actionToService(String action) {
                 Intent startIntent = new Intent(MapActivity.this, LocationService.class);
