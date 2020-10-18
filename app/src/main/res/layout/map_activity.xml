@@ -77,7 +77,7 @@
                 android:text="0 mins"
                 />
             ></RelativeLayout>
-
+            
 
         ></LinearLayout>
         <LinearLayout
@@ -102,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/places_autocomplete_fullscreen_background"
-                android:src="@drawable/stopride" />
+                android:src="@drawable/stop1" />
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/map_BTN_pause"
                 android:tag="pause"
@@ -114,7 +114,28 @@
 
             ></LinearLayout>
 
-
+<ImageView
+    android:id="@+id/map_IMG_zoomIn"
+    android:layout_width="26dp"
+    android:layout_height="26dp"
+    android:layout_alignParentRight="true"
+    android:layout_centerInParent="true"
+    android:layout_marginBottom="10dp"
+    android:layout_marginRight="20dp"
+    android:src="@drawable/zoomin"
+    android:tag="zoom_in"
+    ></ImageView>
+        <ImageView
+            android:id="@+id/map_IMG_zoomOut"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_below="@+id/map_IMG_zoomIn"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="40dp"
+            android:src="@drawable/zoomout"
+            android:tag="zoom_out"
+            ></ImageView>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/map_BTN_directions"
             android:tag="direction"

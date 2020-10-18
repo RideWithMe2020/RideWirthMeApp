@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,13 +71,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private final int LOCATION_PERMISSIONS_REQUEST_CODE = 125;
    private String serverKey = "AIzaSyCI-4RaDocwneRsw2ryTRPMf7NzGV-F1CE"; // Api Key For Google Direction API \\
         private GoogleMap mMap;
-        private MarkerOptions place1=null, place2;
+        private MarkerOptions place1, place2;
         private FloatingActionButton map_BTN_directions,map_BTN_gps,map_BTN_start,map_BTN_stop,map_BTN_state_elite,map_BTN_pause;
         private AutocompleteSupportFragment autocompleteFragment ;
         private EditText map_EDT_place_autocomplete;
         private TextView map_LBL_distance,map_LBL_time;
         private LocalBroadcastManager localBroadcastManager;
-
+        private ImageView map_IMG_zoomIn,map_IMG_zoomOut;
         public static final String BROADCAST_NEW_LOCATION_DETECTED = "com.example.ridewithme.NEW_LOCATION_DETECTED";
         private LatLng location,destination;
     //////////////////////////variables////////////////
@@ -90,7 +91,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                         MyLoc lastLocation = new Gson().fromJson(json, MyLoc.class);
                                         location= new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
                                         newLocation(lastLocation);
-                                } catch(Exception ex) { }
+                                } catch(Exception ex) {
+                                    Log.d("johny", "onReceive: " + ex.toString());
+                                }
                         }
                 }
         };
@@ -102,11 +105,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 Log.d("johny", "run: is on + lati = " +lastLocation.getLatitude() + ", longi= " + lastLocation.getLongitude() );
                               /*  mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(),
                                         lastLocation.getLongitude()),15));*/
-                            if(place1==null)
-                            {
+
+                                mMap.clear();
                                 place1 = new MarkerOptions().position(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())).title("My_Loc");
                                 mMap.addMarker(place1);
-                            }
+                          //      mMap.clear();
+
                         }
                 });
         }
@@ -118,7 +122,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             findViews();
             askLocationPermissions();
             init();
-
             MapFragment mapFragment = (MapFragment) getFragmentManager()
                     .findFragmentById(R.id.map_MAP_google_map);
             mapFragment.getMapAsync(this);
@@ -133,6 +136,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         map_BTN_state_elite.setOnClickListener(myViewLister);
         Places.initialize(getApplicationContext(), serverKey);
         map_EDT_place_autocomplete.setOnClickListener(myViewLister);
+        map_IMG_zoomIn.setOnClickListener(myViewLister);
+        map_IMG_zoomOut.setOnClickListener(myViewLister);
+
     }
 
     private View.OnClickListener myViewLister = new View.OnClickListener() {
@@ -174,6 +180,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         else if(view.getTag().toString().equals("search"))
         {
             searchPlace();
+
+        }
+        else if (view.getTag().toString().equals("zoom_in"))
+        {
+            mMap.animateCamera(CameraUpdateFactory.zoomIn());
+
+        }
+        else if (view.getTag().toString().equals("zoom_out"))
+        {
+            mMap.animateCamera(CameraUpdateFactory.zoomOut());
 
         }
 
@@ -237,7 +253,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
 
-        Log.d("pttt", "Counter= " + counter);
+
         if (counter > 0)
             return true;
         return false;
@@ -254,6 +270,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
          map_LBL_time    =findViewById(R.id.map_LBL_time);
         map_BTN_state_elite = findViewById(R.id.map_BTN_state_elite);
         map_BTN_pause= findViewById(R.id.map_BTN_pause);
+        map_IMG_zoomIn=findViewById(R.id.map_IMG_zoomIn);
+        map_IMG_zoomOut= findViewById(R.id.map_IMG_zoomOut);
         }
     private void getDestinationInfo(LatLng latLngDestination) {
        // progressDialog();
@@ -409,7 +427,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                         // functionality that depends on this permission.
                                         Toast.makeText(MapActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                                 }
-                                return;
                         }
                 }
         }
