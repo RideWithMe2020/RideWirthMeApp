@@ -97,7 +97,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         }
                 }
         };
-
+//
         private void newLocation(final MyLoc lastLocation) {
                 runOnUiThread(new Runnable() {
                         @Override
