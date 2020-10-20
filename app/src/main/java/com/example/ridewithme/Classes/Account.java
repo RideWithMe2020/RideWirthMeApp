@@ -8,17 +8,16 @@ public class Account {
 
     private String email;
     private String password;
-    private ArrayList<Lonlat> location;
-
+    private ArrayList<Tour> tours;
     public Account() {
 
     }
 
-    public Account(String name, String email, String password, ArrayList<Double> location) {
+    public Account(String name, String email, String password, ArrayList<Tour> tours) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.location = new ArrayList<>();
+        this.tours = new ArrayList<>();
     }
 
     public String getName() {
@@ -34,10 +33,18 @@ public class Account {
         return password;
     }
 
-    public ArrayList<Lonlat> getLocation() {
-        return location;
+    public ArrayList<Tour> getTours() {
+        return tours;
     }
 
+    public Account setTours(ArrayList<Tour> tours) {
+        this.tours = tours;
+        return this;
+    }
+    public void addToursToList(Tour tour)
+    {
+        this.tours.add(tour);
+    }
 
     public String setName() {
         return name;

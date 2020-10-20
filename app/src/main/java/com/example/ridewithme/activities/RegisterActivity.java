@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ridewithme.Classes.Account;
+import com.example.ridewithme.Classes.Tour;
 import com.example.ridewithme.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,6 +28,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -49,16 +51,17 @@ public class RegisterActivity extends AppCompatActivity
     Map<String,Object> list = null;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore fStore;
+    private FirebaseDatabase database;
     private String userID;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         findViews();
-        checkValueOfEDT(register_EDT_name,register_EDT_password,register_EDT_email);
         register_PGB_pgb.setVisibility(View.GONE);
 
         firebaseAuth= FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
         fStore = FirebaseFirestore.getInstance();
         register_BTN_create.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,17 +80,6 @@ public class RegisterActivity extends AppCompatActivity
     boolean isEmpty(EditText text) {
         CharSequence str = text.getText().toString();
         return TextUtils.isEmpty(str);
-    }
-    private Set<Account> getSetFromFB() {
-        // import set from FB if not exsist create new LinkedHashSet
-        //  DatabaseReference myRef = database.getReference("account");
-        // set = myref.getSet();
-        if(set==null)
-        {
-            set = new LinkedHashSet<Account>();
-        }
-        Log.d("johny", "getSetFromFB: create set");
-        return  set;
     }
 
     private void findViews() {
@@ -131,13 +123,7 @@ public class RegisterActivity extends AppCompatActivity
    
     }
 
-    private void addAccountToSet(Set<Account> set, Account inputAccount) {
-        set.add(inputAccount);
-        Log.d("johny", "addAccountToSet: add acount to the set");
-    }
 
-    private void addAccountsToFB() {
-    }
 
 
     public void signup() {
@@ -150,7 +136,7 @@ public class RegisterActivity extends AppCompatActivity
         register_BTN_create.setEnabled(false);
             register_PGB_pgb.setVisibility(View.VISIBLE);
         account = createAccount();
-        Log.d("johny", "signup:  account name is" + account.getName());
+        Log.d("johny", "signup:  account tours is" + account.getTours());
 
         firebaseAuth.createUserWithEmailAndPassword(account.getEmail(),account.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -159,6 +145,14 @@ public class RegisterActivity extends AppCompatActivity
             {
                 Toast.makeText(getApplicationContext(),"User created in FB",Toast.LENGTH_SHORT).show();
                 userID = firebaseAuth.getCurrentUser().getUid();
+
+                //-------- insert to Cloud FireBase --> the set of every account with unique userID---------------- //
+                DatabaseReference myDataRef = database.getReference("users");
+                account.getTours().add(new Tour(null,7,"s","ss",7));
+                myDataRef.child(userID).setValue(account);
+
+
+
                 //-------- insert to Cloud FireStore --> the set of every account with unique userID---------------- //
                  DocumentReference myRef = fStore.collection("users").document(userID);
                  myRef.set(account).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -173,7 +167,6 @@ public class RegisterActivity extends AppCompatActivity
 
                      }
                  });
-              //list =  insertAccountToSet(account);
                 onSignupSuccess();
             }
             else {
@@ -185,11 +178,6 @@ public class RegisterActivity extends AppCompatActivity
 
     }
 
-    private Map<String,Object> insertAccountToSet(Account user_account) {
-        list = new HashMap<>();
-        list.put(userID,user_account);
-        return list;
-    }
 
 
     public void onSignupSuccess() {
