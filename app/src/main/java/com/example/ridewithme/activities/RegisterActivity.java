@@ -151,7 +151,7 @@ public class RegisterActivity extends AppCompatActivity
                 account.getTours().add(new Tour(null,7,"s","ss",7));
                 myDataRef.child(userID).setValue(account);
 
-
+//
 
                 //-------- insert to Cloud FireStore --> the set of every account with unique userID---------------- //
                  DocumentReference myRef = fStore.collection("users").document(userID);
