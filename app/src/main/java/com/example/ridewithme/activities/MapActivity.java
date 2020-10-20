@@ -91,7 +91,7 @@ import java.util.Map;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-
+//
     //////////////////////////variables////////////////
     private final static int AUTOCOMPLETE_REQUEST_CODE = 100;
     private final int LOCATION_PERMISSIONS_REQUEST_CODE = 125;
