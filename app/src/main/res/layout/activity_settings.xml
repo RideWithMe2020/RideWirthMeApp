@@ -8,19 +8,6 @@
     android:orientation="vertical"
     >
 
-    //to delete
-    <TextView
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Data"
-        android:textSize="15sp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="25dp"
-        android:textColor="@color/primary"
-        />
-
     <TextView
         android:id="@+id/settings_LBL_data"
         android:layout_width="wrap_content"
