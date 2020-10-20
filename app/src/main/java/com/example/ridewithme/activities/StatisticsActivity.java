@@ -48,9 +48,6 @@ public class StatisticsActivity extends AppCompatActivity {
         Statistics_BARCHART_diagram.setData(barData);
         Statistics_BARCHART_diagram.getDescription().setText("Bar chart example");
         Statistics_BARCHART_diagram.animateY(2000);
-
-
-
     }
 
 }

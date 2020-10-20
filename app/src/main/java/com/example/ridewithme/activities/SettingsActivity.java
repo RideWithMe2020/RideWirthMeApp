@@ -25,6 +25,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Switch settings_SWT_screenOn;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,15 +44,17 @@ public class SettingsActivity extends AppCompatActivity {
         public void onClick(View view) {
             if (view.getTag().toString().equals("data")) {
                 Log.d("stas", "data pressed");
-                Intent intent = new Intent(SettingsActivity.this, TestActivity.class);
+                Intent intent = new Intent(SettingsActivity.this, DataActivity.class);
                 SettingsActivity.this.startActivity(intent);
             }
 
             else if (view.getTag().toString().equals("units")) {
-                unitSelection();
+                String[] units = {"Metric (km)", "Imperial (mi)"};
+                unitSelection(units);
             }
             else if (view.getTag().toString().equals("timer")) {
-
+                String[] units = {"5", "10", "15", "20", "25", "30"};
+                unitSelection(units);
             }
             else if (view.getTag().toString().equals("owners")) {
                 showOwnersDialog();
@@ -71,12 +74,12 @@ public class SettingsActivity extends AppCompatActivity {
 
     };
 
-    private void unitSelection() {
-        String[] Units = {"Metric (km)", "Imperial (mi)"};
+    private void unitSelection(String[] choose) {
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Pick a Unit");
-        builder.setItems(Units, new DialogInterface.OnClickListener() {
+        builder.setTitle("Choose an option");
+        builder.setItems(choose, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
