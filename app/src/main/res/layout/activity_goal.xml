@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.GoalActivity">
+
+    <TextView
+        android:id="@+id/goal_LBL_goals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GOALS"
+        android:textSize="35sp"
+        android:layout_centerHorizontal="true"
+        android:textColor="#00FF0D"
+        />
+
+    <LinearLayout
+        android:id="@+id/goal_LAY_linealLay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/goal_BTN_addGoal"
+        android:layout_below="@id/goal_LBL_goals"
+        android:orientation="vertical" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/goal_BTN_addGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_plus_"
+        app:iconTint="#6501F4"
+        app:cornerRadius="50dp"
+        android:background="@color/common_google_signin_btn_text_light"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:text="add new goal"
+        android:textSize="25sp"
+        android:textColor="#6501F4"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:tag="addGoal"
+        />
+
+
+
+
+
+</RelativeLayout>

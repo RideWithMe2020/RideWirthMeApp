@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SettingsActivity"
+    android:orientation="vertical"
+    >
+
+
+    <TextView
+        android:id="@+id/settings_LBL_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Data"
+        android:textSize="15sp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="25dp"
+        android:textColor="@color/primary"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@id/settings_LBL_data"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="User Data"
+            android:textStyle="bold"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Change your personal data"
+            android:textSize="15sp"
+            android:layout_marginLeft="15dp"
+            /></LinearLayout>
+
+    <TextView
+        android:id="@+id/settings_LBL_screen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Screen"
+        android:textSize="15sp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="25dp"
+        android:textColor="@color/primary"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@id/settings_LBL_data"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Keep screen on"
+            android:textStyle="bold"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Prevent the sceen to go off when the Start button is pressed"
+            android:textSize="15sp"
+            android:layout_marginLeft="15dp"
+            /></LinearLayout>
+
+
+</LinearLayout>

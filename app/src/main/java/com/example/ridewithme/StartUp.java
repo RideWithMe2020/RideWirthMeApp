@@ -6,7 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.ridewithme.activities.GoalActivity;
+import com.example.ridewithme.activities.HistoryActivity;
 import com.example.ridewithme.activities.MapActivity;
+import com.example.ridewithme.activities.SettingsActivity;
+import com.example.ridewithme.activities.StatisticsActivity;
 import com.google.android.material.button.MaterialButton;
 
 public class StartUp extends AppCompatActivity {
@@ -16,7 +20,9 @@ public class StartUp extends AppCompatActivity {
     private MaterialButton Start_BTN_history;
     private MaterialButton Start_BTN_statistics;
     private MaterialButton Start_BTN_settings;
-    private MaterialButton Start_BTN_friends;
+
+
+
 
 
     @Override
@@ -24,15 +30,65 @@ public class StartUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_up);
         findViews();
-        Start_BTN_bikeRide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
-                StartUp.this.startActivity(intent);
-            }
-        });
+
+        Start_BTN_bikeRide.setOnClickListener(buttonClickListener);
+        Start_BTN_goal.setOnClickListener(buttonClickListener);
+        Start_BTN_history.setOnClickListener(buttonClickListener);
+        Start_BTN_statistics.setOnClickListener(buttonClickListener);
+        Start_BTN_settings.setOnClickListener(buttonClickListener);
 
 
+
+    }
+
+    private View.OnClickListener buttonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            buttonClicked(view);
+        }
+    };
+
+    private void buttonClicked(View view) {
+        if(view.getTag().toString().equals("lets ride")){
+            rideActivity();
+        }
+        if(view.getTag().toString().equals("goal")){
+            goalActivity();
+        }
+        if(view.getTag().toString().equals("history")){
+            historyActivity();
+        }
+        if(view.getTag().toString().equals("statistics")){
+            statisticsActivity();
+        }
+        if(view.getTag().toString().equals("settings")){
+            settingsActivity();
+        }
+    }
+
+    private void settingsActivity() {
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        this.startActivity(intent);
+    }
+
+    private void statisticsActivity() {
+        Intent intent = new Intent(getApplicationContext(), StatisticsActivity.class);
+        this.startActivity(intent);
+    }
+
+    private void historyActivity() {
+        Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
+        this.startActivity(intent);
+    }
+
+    private void goalActivity() {
+        Intent intent = new Intent(getApplicationContext(), GoalActivity.class);
+        this.startActivity(intent);
+    }
+
+    private void rideActivity() {
+        Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+        StartUp.this.startActivity(intent);
     }
 
     private void findViews(){
@@ -41,7 +97,6 @@ public class StartUp extends AppCompatActivity {
         Start_BTN_history = findViewById(R.id.Start_BTN_history);
         Start_BTN_statistics = findViewById(R.id.Start_BTN_statistics);
         Start_BTN_settings = findViewById(R.id.Start_BTN_settings);
-        Start_BTN_friends = findViewById(R.id.Start_BTN_friends);
     }
 
 
