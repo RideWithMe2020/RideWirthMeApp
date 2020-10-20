@@ -91,7 +91,7 @@ import java.util.Map;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-//
+    //
     //////////////////////////variables////////////////
     private final static int AUTOCOMPLETE_REQUEST_CODE = 100;
     private final int LOCATION_PERMISSIONS_REQUEST_CODE = 125;
@@ -107,7 +107,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public static final String BROADCAST_NEW_LOCATION_DETECTED = "com.example.ridewithme.NEW_LOCATION_DETECTED";
     private LatLng location, destination;
     private Tour myTour;
-    private String  sourceLocation;
+    private String sourceLocation;
     private double avg_Speed = 0.0;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore fStore;
@@ -126,14 +126,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     location = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
                     sourceLocation = getCompleteAddressString(lastLocation.getLatitude(), lastLocation.getLongitude());
                     newLocation(lastLocation);
-                 //  myTour.addAvg_speed(lastLocation.getSpeed());
+                    //  myTour.addAvg_speed(lastLocation.getSpeed());
                 } catch (Exception ex) {
                     Log.d("johny", "onReceive: " + ex.toString());
                 }
             }
         }
     };
-
 
 
     //
@@ -145,9 +144,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Log.d("johny", "run: is on + lati = " + lastLocation.getLatitude() + ", longi= " + lastLocation.getLongitude());
                               /*  mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(),
                                         lastLocation.getLongitude()),15));*/
-              //  place1 = new MarkerOptions().position(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())).title("My_Loc");
+                //  place1 = new MarkerOptions().position(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())).title("My_Loc");
 
-              //  mMap.addMarker(place1);
+                //  mMap.addMarker(place1);
                 //      mMap.clear();
 
             }
@@ -161,11 +160,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         findViews();
         askLocationPermissions();
         init();
-        firebaseAuth= FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         database = FirebaseDatabase.getInstance();
-
-        if(account!=null)
+        map_BTN_stop.setClickable(false);
+        if (account != null)
             Log.d("johny", "onCreate: " + account.getName() + account.getTours());
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map_MAP_google_map);
@@ -178,7 +177,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //-------- insert to Cloud FireStore -----------////////////////
         String userID = firebaseAuth.getCurrentUser().getUid();
         Log.d("johny", "getUserFromFB: userID =  " + userID);
-            final DocumentReference myRef = fStore.collection("tours").document(userID);
+        final DocumentReference myRef = fStore.collection("tours").document(userID);
         Map<String, Object> updates = new HashMap<>();
         updates.put(userID, myTour);
        /* myRef.update(updates, FieldValue.arrayUnion(updates)).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -198,10 +197,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 // whenever data at this location is updated.
                 //Tour tour = dataSnapshot.getValue(Tour.class);
                 account = dataSnapshot.getValue(Account.class);
-               // tours.add(myTour);
+                // tours.add(myTour);
                 account.getTours().add(myTour);
                 addTourToFB();
-                Log.d("johny", "onDataChange: dest is "  + account.getTours().get(1).getDest());
+                Log.d("johny", "onDataChange: dest is " + account.getTours().get(1).getDest());
             }
 
             @Override
@@ -211,7 +210,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-       // myRef.update(updates);
+        // myRef.update(updates);
         /*        myRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -226,7 +225,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             }
         });*/
-       // myRef.update(updates);
+        // myRef.update(updates);
         //fStore.collection("users/tours").document(userID).set(updates);
         /*myRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
@@ -239,7 +238,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });*/
     }
-//
+
+    //
     private void addTourToFB() {
         String userID = firebaseAuth.getCurrentUser().getUid();
         //-------- insert to Cloud Firebase --> the set of every account with unique userID---------------- //
@@ -282,16 +282,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
                 strAdd = strReturnedAddress.toString();
-              //  Log.d("johny", strReturnedAddress.toString());
+                //  Log.d("johny", strReturnedAddress.toString());
             } else {
-              //  Log.d("johny", "No Address returned!");
+                //  Log.d("johny", "No Address returned!");
             }
         } catch (Exception e) {
             e.printStackTrace();
-         //   Log.d("johny", "Canont get Address!");
+            //   Log.d("johny", "Canont get Address!");
         }
         return strAdd;
     }
+
     private void init() {
         map_BTN_directions.setOnClickListener(myViewLister);
         map_BTN_gps.setOnClickListener(myViewLister);
@@ -373,7 +374,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void createTour() {
         Date currentTime = Calendar.getInstance().getTime();
-        myTour = new Tour(currentTime,0,sourceLocation,null,0);
+        myTour = new Tour(currentTime, 0, sourceLocation, null, 0);
     }
 
     private void addDestPlaceInMap(Intent data) {
@@ -383,10 +384,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         destination = place.getLatLng();
         /*myTour.setDest(getCompleteAddressString(destination.latitude,destination.longitude));
         Log.d("johny", "addDestPlaceInMap: source = " + myTour.getSource() + " dest = " + myTour.getDest());*/
-        String dest = getCompleteAddressString(destination.latitude,destination.longitude);
+        String dest = getCompleteAddressString(destination.latitude, destination.longitude);
         myTour.setDest(dest);
         Log.d("johny", "addDestPlaceInMap:  dest is " + myTour.getDest());
-      //  getUserFromFB();
+        //  getUserFromFB();
         map_EDT_place_autocomplete.setText(place.getAddress());
         place2 = new MarkerOptions().position(place.getLatLng()).title("Dest");
         mMap.addMarker(place2);
@@ -395,15 +396,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void validateButtons() {
         if (isMyServiceRunning(LocationService.class)) {
-            map_BTN_start.setEnabled(false);
-            map_BTN_pause.setEnabled(true);
-            map_BTN_stop.setEnabled(true);
-            map_BTN_gps.setEnabled(true);
-        } else {
-            map_BTN_start.setEnabled(true);
-            map_BTN_gps.setEnabled(false);
-            map_BTN_pause.setEnabled(false);
-            map_BTN_stop.setEnabled(false);
+            if (!map_BTN_stop.isClickable()) {
+                map_BTN_start.setClickable(true);
+                map_BTN_start.setEnabled(true);
+            } else if (!map_BTN_pause.isClickable()) {
+                map_BTN_start.setClickable(true);
+                map_BTN_start.setEnabled(true);
+            } else {
+                map_BTN_pause.setEnabled(true);
+                map_BTN_stop.setEnabled(true);
+                map_BTN_pause.setClickable(true);
+                map_BTN_stop.setClickable(true);
+            }
         }
     }
 
@@ -494,7 +498,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     @Override
                     public void onDirectionFailure(Throwable t) {
-                        Toast.makeText(getApplicationContext(), "Error in find routes", Toast.LENGTH_SHORT).show();                    }
+                        Toast.makeText(getApplicationContext(), "Error in find routes", Toast.LENGTH_SHORT).show();
+                    }
                 });
         //-------------------------------------------------------------------------------\\
 
@@ -547,73 +552,79 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             return;
         }
 
-            mMap.setMyLocationEnabled(true);
+        mMap.setMyLocationEnabled(true);
 
 
-
-        }
-
-        private void startService() {
-                actionToService(LocationService.START_FOREGROUND_SERVICE);
-            validateButtons();
-        }
-
-        private void pauseService() {
-         actionToService(LocationService.PAUSE_FOREGROUND_SERVICE);
-            validateButtons();
     }
 
-        private void stopService() {
-                actionToService(LocationService.STOP_FOREGROUND_SERVICE);
-            validateButtons();
+    private void startService() {
+        Log.d("stas", "start Service ");
+        map_BTN_stop.setClickable(true);
+        map_BTN_pause.setClickable(true);
+        actionToService(LocationService.START_FOREGROUND_SERVICE);
+        validateButtons();
     }
 
-        private void actionToService(String action) {
-                Intent startIntent = new Intent(MapActivity.this, LocationService.class);
-                startIntent.setAction(action);
+    private void pauseService() {
+        Log.d("stas", "pause Service");
+        map_BTN_pause.setClickable(false);
+        actionToService(LocationService.PAUSE_FOREGROUND_SERVICE);
+        validateButtons();
+    }
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForegroundService(startIntent);
-                        // or
-                        //ContextCompat.startForegroundService(this, startIntent);
+    private void stopService() {
+        Log.d("stas", "stop Service");
+        map_BTN_stop.setClickable(false);
+        actionToService(LocationService.STOP_FOREGROUND_SERVICE);
+        validateButtons();
+    }
+
+    private void actionToService(String action) {
+        Intent startIntent = new Intent(MapActivity.this, LocationService.class);
+        startIntent.setAction(action);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(startIntent);
+            // or
+            //ContextCompat.startForegroundService(this, startIntent);
+        } else {
+            startService(startIntent);
+        }
+    }
+
+    // // // // // // // // // // // // // // // // Permissions  // // // // // // // // // // // // // // //
+
+    private void askLocationPermissions() {
+        ActivityCompat.requestPermissions(MapActivity.this,
+                new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                        , Manifest.permission.ACCESS_FINE_LOCATION
+                        , Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                        , Manifest.permission.FOREGROUND_SERVICE
+                },
+                LOCATION_PERMISSIONS_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSIONS_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Toast.makeText(MapActivity.this, "Result code = " + grantResults[0], Toast.LENGTH_SHORT).show();
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
                 } else {
-                        startService(startIntent);
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(MapActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
+            }
         }
-
-        // // // // // // // // // // // // // // // // Permissions  // // // // // // // // // // // // // // //
-
-        private void askLocationPermissions() {
-                ActivityCompat.requestPermissions(MapActivity.this,
-                        new String[]{
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                                ,Manifest.permission.ACCESS_FINE_LOCATION
-                                ,Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                                ,Manifest.permission.FOREGROUND_SERVICE
-                        },
-                        LOCATION_PERMISSIONS_REQUEST_CODE);
-        }
-
-        @Override
-        public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-                switch (requestCode) {
-                        case LOCATION_PERMISSIONS_REQUEST_CODE: {
-                                // If request is cancelled, the result arrays are empty.
-                                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                                        Toast.makeText(MapActivity.this, "Result code = " + grantResults[0], Toast.LENGTH_SHORT).show();
-
-                                        // permission was granted, yay! Do the
-                                        // contacts-related task you need to do.
-                                } else {
-
-                                        // permission denied, boo! Disable the
-                                        // functionality that depends on this permission.
-                                        Toast.makeText(MapActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-                                }
-                        }
-                }
-        }
+    }
 
 
 }
