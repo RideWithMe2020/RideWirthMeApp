@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -15,9 +16,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.GoalActivity"></activity>
-        <activity android:name=".activities.HistoryActivity" />
+        <activity android:name=".activities.DataActivity" />
         <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activities.GoalActivity" />
+        <activity android:name=".activities.HistoryActivity" />
         <activity android:name=".activities.StatisticsActivity" />
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.LoginActivity" />

@@ -10,4 +10,19 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="google_maps_key">"AIzaSyCI-4RaDocwneRsw2ryTRPMf7NzGV-F1CE"</string>
+    <string name="keep_screen_on">Keep screen on</string>
+    <string name="data">Data</string>
+    <string name="user_data">User Data</string>
+    <string name="change_your_personal_data">Change your personal data</string>
+    <string name="screen">Screen</string>
+    <string name="prevent_the_screen_to_go_off_when_the_start_button_is_pressed">Prevent the screen to go off when the Start button is pressed</string>
+    <string name="units">Units</string>
+    <string name="choose_unit_of_measure">Choose unit of measure</string>
+    <string name="countdown_timer">Countdown Timer</string>
+    <string name="countdown_timer_title">Countdown timer title</string>
+    <string name="choose_the_delay_time">Choose the delay time</string>
+    <string name="contact_us">Contact us</string>
+    <string name="send_us_feedback_or_just_contact_us">Send us feedback or just contact us</string>
+    <string name="change_your_data">Change your data</string>
+    <string name="save">SAVE</string>
 </resources>

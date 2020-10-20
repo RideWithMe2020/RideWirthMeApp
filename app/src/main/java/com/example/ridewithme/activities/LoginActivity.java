@@ -106,9 +106,8 @@ public class LoginActivity extends AppCompatActivity {
 
                     }
                     else {
-                        onLoginFailed( task);
+                        onLoginFailed(task);
                     }
-
                 }
             });
         }
