@@ -15,12 +15,30 @@
         android:supportsRtl="true"
 
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.RegisterActivity"></activity>
-        <activity android:name=".activities.LoginActivity"></activity>
-        <activity android:name=".MainPage" />
-        <activity android:name=".activities.MapActivity"></activity>
-        <activity android:name=".StartUp"></activity>
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".activities.RegisterActivity"
+            android:screenOrientation="portrait"
+            >
+
+        </activity>
+        <activity android:name=".activities.LoginActivity"
+            android:screenOrientation="portrait"
+
+            ></activity>
+        <activity android:name=".MainPage"
+           android:screenOrientation="portrait"
+            >
+    </activity>
+
+    <activity android:name=".activities.MapActivity"
+        android:screenOrientation="portrait"
+        >
+        </activity>
+        <activity android:name=".StartUp"
+            android:screenOrientation="portrait"
+            ></activity>
+        <activity android:name=".activities.MainActivity"
+            android:screenOrientation="portrait"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
