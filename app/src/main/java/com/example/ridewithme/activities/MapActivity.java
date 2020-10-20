@@ -342,7 +342,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             mMap.animateCamera(CameraUpdateFactory.zoomOut());
 
         }
-
+//
     }
 
     private void searchPlace() {
