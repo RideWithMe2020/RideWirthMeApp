@@ -239,7 +239,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });*/
     }
-
+//
     private void addTourToFB() {
         String userID = firebaseAuth.getCurrentUser().getUid();
         //-------- insert to Cloud Firebase --> the set of every account with unique userID---------------- //
