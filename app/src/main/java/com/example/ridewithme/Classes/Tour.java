@@ -68,5 +68,7 @@ public class Tour {
         return this;
     }
 
-
+    public float getKm() {
+        return km;
+    }
 }
