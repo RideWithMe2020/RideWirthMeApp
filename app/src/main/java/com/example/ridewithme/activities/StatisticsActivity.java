@@ -52,13 +52,7 @@ public class StatisticsActivity extends AppCompatActivity {
         myDataRef.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("johny", "onDataChange ,method");
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                //Tour tour = dataSnapshot.getValue(Tour.class);
                 account = dataSnapshot.getValue(Account.class);
-                // tours.add(myTour);
-                Log.d("johny", "onDataChange: account is " + account.getName() + " " + account.getEmail());
                 getStatsFB(account);
             }
 
@@ -78,14 +72,6 @@ public class StatisticsActivity extends AppCompatActivity {
         for (int i = 0; i <= tours.size() - 1; i++) {
             stats.add(new BarEntry((float) tours.get(i).getTime_in_minutes(), (float) tours.get(i).getKm()));
         }
-
-//            visitors.add(new BarEntry(2014, 204));
-//            visitors.add(new BarEntry(2015, 355));
-//            visitors.add(new BarEntry(2016, 234));
-//            visitors.add(new BarEntry(2017, 345));
-//            visitors.add(new BarEntry(2018, 767));
-//            visitors.add(new BarEntry(2019, 544));
-//            visitors.add(new BarEntry(2020, 234));
 
         BarDataSet barDataSet = new BarDataSet(stats, "KM");
         barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);

@@ -63,11 +63,6 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
 
-//        Log.d("johny", "before getFB");
-//        getUserFromFB();
-//        Log.d("johny", "after getFB");
-
-
     private void getUserFromFB() {
         firebaseAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -79,11 +74,7 @@ public class HistoryActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("johny", "onDataChange ,method");
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                //Tour tour = dataSnapshot.getValue(Tour.class);
                 account = dataSnapshot.getValue(Account.class);
-                // tours.add(myTour);
                 Log.d("johny", "onDataChange: account is " + account.getName() + " " + account.getEmail());
                 showHistory(account);
             }
@@ -98,15 +89,6 @@ public class HistoryActivity extends AppCompatActivity {
 
 
     private void showHistory(Account thisAccount) {
-//        LinearLayout history_LAY_linealLay = (LinearLayout) findViewById(R.id.history_LAY_linealLay);
-//        Log.d("stas", "tour is " + thisAccount.getTours().get(0));
-//        for (int i = 0; i <= thisAccount.getTours().size()-1; i++) {
-//            Tour tour = thisAccount.getTours().get(i);
-//            history_LBL_history = new TextView(HistoryActivity.this);
-//            history_LBL_history.setText("date: " + tour.getDate() + " source: " + tour.getSource()  + " dest: " + tour.getDest() +
-//                    " avg speed: " + tour.getAvg_speed() + " time: " + tour.getTime_in_minutes());
-//            history_LBL_history.setTextSize(20);
-//            history_LAY_linealLay.addView(history_LBL_history);
         ArrayList<Tour> allTours = thisAccount.getTours();
         Adapter_Exercise adapter_exercise = new Adapter_Exercise(this, allTours);
         list_LST_exercises.setLayoutManager(new LinearLayoutManager(this));
