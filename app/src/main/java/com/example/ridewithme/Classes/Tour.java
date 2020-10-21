@@ -36,6 +36,11 @@ public class Tour {
         return time_in_minutes;
     }
 
+    public Tour setKm(float km) {
+        this.km = km;
+        return this;
+    }
+
     public String getSource() {
         return source;
     }
@@ -67,6 +72,7 @@ public class Tour {
         this.avg_speed += avg_speed;
         return this;
     }
+
 
     public float getKm() {
         return km;

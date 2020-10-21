@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.ridewithme.Classes.Account;
+import com.example.ridewithme.Classes.Tour;
 import com.example.ridewithme.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -29,7 +30,7 @@ public class StatisticsActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private Account account;
 
-    private  BarChart Statistics_BARCHART_diagram;
+    private BarChart Statistics_BARCHART_diagram;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class StatisticsActivity extends AppCompatActivity {
                 account = dataSnapshot.getValue(Account.class);
                 // tours.add(myTour);
                 Log.d("johny", "onDataChange: account is " + account.getName() + " " + account.getEmail());
-               // getStatsFB(account);
+                getStatsFB(account);
             }
 
             @Override
@@ -69,28 +70,33 @@ public class StatisticsActivity extends AppCompatActivity {
         });
 
 
-     //   private void getStatsFB (Account thisAccount){
-
-
-            ArrayList<BarEntry> visitors = new ArrayList<>();
-            visitors.add(new BarEntry(2014, 204));
-            visitors.add(new BarEntry(2015, 355));
-            visitors.add(new BarEntry(2016, 234));
-            visitors.add(new BarEntry(2017, 345));
-            visitors.add(new BarEntry(2018, 767));
-            visitors.add(new BarEntry(2019, 544));
-            visitors.add(new BarEntry(2020, 234));
-
-            BarDataSet barDataSet = new BarDataSet(visitors, "Visitors");
-            barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-            barDataSet.setValueTextColor(Color.BLACK);
-            barDataSet.setValueTextSize(16f);
-
-            BarData barData = new BarData(barDataSet);
-            Statistics_BARCHART_diagram.setFitBars(true);
-            Statistics_BARCHART_diagram.setData(barData);
-            Statistics_BARCHART_diagram.getDescription().setText("Bar chart example");
-            Statistics_BARCHART_diagram.animateY(2000);
-        }
     }
+
+    private void getStatsFB(Account account) {
+        ArrayList<Tour> tours = account.getTours();
+        ArrayList<BarEntry> stats = new ArrayList<>();
+        for (int i = 0; i <= tours.size() - 1; i++) {
+            stats.add(new BarEntry((float) tours.get(i).getTime_in_minutes(), (float) tours.get(i).getKm()));
+        }
+
+//            visitors.add(new BarEntry(2014, 204));
+//            visitors.add(new BarEntry(2015, 355));
+//            visitors.add(new BarEntry(2016, 234));
+//            visitors.add(new BarEntry(2017, 345));
+//            visitors.add(new BarEntry(2018, 767));
+//            visitors.add(new BarEntry(2019, 544));
+//            visitors.add(new BarEntry(2020, 234));
+
+        BarDataSet barDataSet = new BarDataSet(stats, "KM");
+        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setValueTextSize(16f);
+
+        BarData barData = new BarData(barDataSet);
+        Statistics_BARCHART_diagram.setFitBars(true);
+        Statistics_BARCHART_diagram.setData(barData);
+        Statistics_BARCHART_diagram.getDescription().setText("Stats");
+        Statistics_BARCHART_diagram.animateY(2000);
+    }
+}
 
