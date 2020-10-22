@@ -628,9 +628,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void finishTour() {
         myTour.setTime_in_minutes(counter);
-
-        //double total_km  = (Double.parseDouble(distance)/counter);
-       // myTour.setAvg_speed(total_km);
+        String kmString = myTour.getKm();
+        String[] km = kmString.split(" ");
+        double total_km  = (Float.parseFloat(km[0])/counter);
+        myTour.setAvg_speed(total_km);
         Log.d("johny", "finishTour: " + myTour.getAvg_speed() + myTour.getDest());
         getUserFromFB();
         createCustomFinishTour();

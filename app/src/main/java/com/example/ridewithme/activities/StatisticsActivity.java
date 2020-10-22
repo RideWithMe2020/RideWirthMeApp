@@ -70,10 +70,11 @@ public class StatisticsActivity extends AppCompatActivity {
         ArrayList<Tour> tours = account.getTours();
         ArrayList<BarEntry> stats = new ArrayList<>();
         for (int i = 0; i <= tours.size() - 1; i++) {
-            float km = Float.parseFloat(tours.get(i).getKm());
-            stats.add(new BarEntry((float) tours.get(i).getTime_in_minutes(), km));
+            String kmString = tours.get(i).getKm();
+            String[] km = kmString.split(" ");
+            stats.add(new BarEntry((float) tours.get(i).getTime_in_minutes(), Float.parseFloat(km[0])));
         }
-//
+
         BarDataSet barDataSet = new BarDataSet(stats, "KM");
         barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         barDataSet.setValueTextColor(Color.BLACK);
