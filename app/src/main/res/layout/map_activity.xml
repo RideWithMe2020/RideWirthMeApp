@@ -30,6 +30,18 @@
 
                 />
                 ></LinearLayout>
+        <TextView
+            android:id="@+id/map_LBL_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="80dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/primary"
+            android:textSize="20sp"
+            ></TextView>
         <LinearLayout
         android:layout_width="wrap_content"
         android:layout_alignParentBottom="true"
@@ -98,11 +110,12 @@
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/map_BTN_stop"
-                android:tag="stop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/places_autocomplete_fullscreen_background"
-                android:src="@drawable/stop1" />
+                android:src="@drawable/stop1"
+                android:tag="stop" />
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/map_BTN_pause"
                 android:tag="pause"
@@ -110,6 +123,14 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/places_autocomplete_fullscreen_background"
                 android:src="@drawable/pausepic"
+                />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/map_BTN_start_timer"
+                android:tag="pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/places_autocomplete_fullscreen_background"
+                android:src="@drawable/playtimer"
                 />
 
             ></LinearLayout>
@@ -136,6 +157,7 @@
             android:src="@drawable/zoomout"
             android:tag="zoom_out"
             ></ImageView>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/map_BTN_directions"
             android:tag="direction"
