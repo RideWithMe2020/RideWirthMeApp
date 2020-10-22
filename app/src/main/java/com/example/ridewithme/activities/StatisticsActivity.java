@@ -65,7 +65,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
 
     }
-
+//
     private void getStatsFB(Account account) {
         ArrayList<Tour> tours = account.getTours();
         ArrayList<BarEntry> stats = new ArrayList<>();
