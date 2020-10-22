@@ -73,7 +73,7 @@ public class StatisticsActivity extends AppCompatActivity {
             float km = Float.parseFloat(tours.get(i).getKm());
             stats.add(new BarEntry((float) tours.get(i).getTime_in_minutes(), km));
         }
-
+//
         BarDataSet barDataSet = new BarDataSet(stats, "KM");
         barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         barDataSet.setValueTextColor(Color.BLACK);
