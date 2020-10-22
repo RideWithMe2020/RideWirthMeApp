@@ -252,12 +252,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 // whenever data at this location is updated.
                 //Tour tour = dataSnapshot.getValue(Tour.class);
                 account = dataSnapshot.getValue(Account.class);
-                if (account != null)
-                    Log.d("johny", "onDataChange: name is " + account.getName());
+                Log.d("johny", "onDataChange: name is " + account.getName());
                 // tours.add(myTour);
+                if(account.getTours() == null){
+                    Log.d("stas", "tour check");
+                    account = account.setTours(new ArrayList<Tour>());
+                    Log.d("stas", "the tours BEFORE are :" + account.getTours()) ;
+                }
+                Log.d("stas", "the tours AFTER are :" + account.getTours());
                 account.getTours().add(myTour);
                 addTourToFB(account);
-                Log.d("johny", "onDataChange: dest is " + account.getTours().get(1).getDest());
+                Log.d("johny", "onDataChange: dest is " + account.getTours().get(0).getDest());
             }
 
             @Override
@@ -623,8 +628,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void finishTour() {
         myTour.setTime_in_minutes(counter);
-        double total_km  = (Double.parseDouble(distance)/counter);
-        myTour.setAvg_speed(total_km);
+
+        //double total_km  = (Double.parseDouble(distance)/counter);
+       // myTour.setAvg_speed(total_km);
         Log.d("johny", "finishTour: " + myTour.getAvg_speed() + myTour.getDest());
         getUserFromFB();
         createCustomFinishTour();

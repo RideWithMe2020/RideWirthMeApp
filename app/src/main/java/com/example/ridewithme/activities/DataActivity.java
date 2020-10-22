@@ -69,6 +69,7 @@ public class DataActivity extends AppCompatActivity {
         }
         if(!newName.isEmpty()){
             database.getReference().child("users").child(userID).child("name").setValue(newName);
+
         }
         if(!newPassword.isEmpty()){
             database.getReference().child("users").child(userID).child("password").setValue(newPassword);

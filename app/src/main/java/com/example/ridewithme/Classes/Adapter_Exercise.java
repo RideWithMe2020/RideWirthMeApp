@@ -54,6 +54,9 @@ public class Adapter_Exercise extends RecyclerView.Adapter<Adapter_Exercise.View
     // total number of rows
     @Override
     public int getItemCount() {
+        if(mData == null){
+            return -1;
+        }
         return mData.size();
     }
 

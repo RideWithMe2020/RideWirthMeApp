@@ -10,7 +10,6 @@ public class Account {
     private String password;
     private ArrayList<Tour> tours;
     public Account() {
-
     }
 
     public Account(String name, String email, String password, ArrayList<Tour> tours) {
@@ -19,6 +18,9 @@ public class Account {
         this.password = password;
         this.tours = new ArrayList<>();
     }
+
+
+
 
     public String getName() {
         return name;
