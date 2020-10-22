@@ -143,7 +143,6 @@
     android:layout_centerInParent="true"
     android:layout_marginBottom="10dp"
     android:layout_marginRight="20dp"
-    android:src="@drawable/zoomin"
     android:tag="zoom_in"
     ></ImageView>
         <ImageView
@@ -154,7 +153,6 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="40dp"
-            android:src="@drawable/zoomout"
             android:tag="zoom_out"
             ></ImageView>
 

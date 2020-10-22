@@ -111,34 +111,16 @@ public class RegisterActivity extends AppCompatActivity
         return  user;
     }
 
-    public void checkValueOfEDT(EditText name, EditText password, EditText email) {
-        if (isEmpty(password) || password.length() < 4 || password.length() > 10) {
-            password.setError("between 4 and 10 alphanumeric characters");
-        }
-        if (isEmpty(name) || name.length() < 3) {
-            register_EDT_name.setError("at least 3 characters");
-        }
-        if (isEmail(email) == false) {
-            email.setError("Enter valid email!");
-        }
-   
-    }
-
-
-
 
     public void signup() {
-
         if (!validate()) {
             onSignupFailed();
             return;
         }
-
         register_BTN_create.setEnabled(false);
             register_PGB_pgb.setVisibility(View.VISIBLE);
         account = createAccount();
         Log.d("johny", "signup:  account tours is" + account.getTours());
-
         firebaseAuth.createUserWithEmailAndPassword(account.getEmail(),account.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -146,28 +128,10 @@ public class RegisterActivity extends AppCompatActivity
             {
                 Toast.makeText(getApplicationContext(),"User created in FB",Toast.LENGTH_SHORT).show();
                 userID = firebaseAuth.getCurrentUser().getUid();
-
                 //-------- insert to Cloud FireBase --> the set of every account with unique userID---------------- //
                 DatabaseReference myDataRef = database.getReference("users");
-                account.getTours().add(new Tour(null,7,"s","ss",7,"0"));
                 myDataRef.child(userID).setValue(account);
 
-
-
-                //-------- insert to Cloud FireStore --> the set of every account with unique userID---------------- //
-                 DocumentReference myRef = fStore.collection("users").document(userID);
-                 myRef.set(account).addOnSuccessListener(new OnSuccessListener<Void>() {
-                     @Override
-                     public void onSuccess(Void aVoid) {
-                         Log.d("johny", "onSuccess: account upload to firestore");
-                     }
-                 }).addOnFailureListener(new OnFailureListener() {
-                     @Override
-                     public void onFailure(@NonNull Exception e) {
-                         Log.d("johny", "onFailure: failed upload to firestore");
-
-                     }
-                 });
                 onSignupSuccess();
             }
             else {

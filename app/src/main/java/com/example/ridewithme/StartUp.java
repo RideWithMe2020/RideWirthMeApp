@@ -22,8 +22,15 @@ public class StartUp extends AppCompatActivity {
     private MaterialButton Start_BTN_settings;
 
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

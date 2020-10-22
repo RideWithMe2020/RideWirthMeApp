@@ -70,9 +70,7 @@ public class StatisticsActivity extends AppCompatActivity {
         ArrayList<Tour> tours = account.getTours();
         ArrayList<BarEntry> stats = new ArrayList<>();
         for (int i = 0; i <= tours.size() - 1; i++) {
-            String kmString = tours.get(i).getKm();
-            String[] km = kmString.split(" ");
-            stats.add(new BarEntry((float) tours.get(i).getTime_in_minutes(), Float.parseFloat(km[0])));
+            stats.add(new BarEntry((float) tours.get(i).getTime_in_minutes(), (float)tours.get(i).getKm()));
         }
 
         BarDataSet barDataSet = new BarDataSet(stats, "KM");

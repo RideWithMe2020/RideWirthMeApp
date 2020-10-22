@@ -11,11 +11,11 @@ public class Tour {
     private String source;
     private String dest;
     private double avg_speed;
-    private String km;
+    private double km;
 
 
 
-    public Tour(String date, int time_in_minutes, String source, String dest, double avg_speed, String km) {
+    public Tour(String date, int time_in_minutes, String source, String dest, double avg_speed, double km) {
         this.date = date;
         this.time_in_minutes = time_in_minutes;
         this.source = source;
@@ -40,11 +40,11 @@ public class Tour {
         this.date = date;
         return this;
     }
-    public String getKm() {
+    public double getKm() {
         return km;
     }
 
-    public Tour setKm(String km) {
+    public Tour setKm(double km) {
         this.km = km;
         return this;
     }
