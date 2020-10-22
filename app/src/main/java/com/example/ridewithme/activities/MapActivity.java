@@ -254,11 +254,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 account = dataSnapshot.getValue(Account.class);
                 Log.d("johny", "onDataChange: name is " + account.getName());
                 // tours.add(myTour);
-                if(account.getTours() == null){
-                    Log.d("stas", "tour check");
-                    account = account.setTours(new ArrayList<Tour>());
-                    Log.d("stas", "the tours BEFORE are :" + account.getTours()) ;
-                }
                 Log.d("stas", "the tours AFTER are :" + account.getTours());
                 account.getTours().add(myTour);
                 addTourToFB(account);

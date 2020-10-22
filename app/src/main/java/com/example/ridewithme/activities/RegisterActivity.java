@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -104,7 +105,7 @@ public class RegisterActivity extends AppCompatActivity
         String password= register_EDT_password.getText().toString();
 
 
-        Account user = new Account(name,email,password,null);
+        Account user = new Account(name,email,password,new ArrayList<Tour>());
 
         Log.d("johny", "createAccount: create acounts success " + user.getName());
         return  user;
