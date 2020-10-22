@@ -37,22 +37,22 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity
+{
     final Handler handler = new Handler(Looper.getMainLooper());
     private EditText register_EDT_name;
     private EditText register_EDT_email;
     private EditText register_EDT_password;
     private MaterialButton register_BTN_create;
-    private TextView register_TXT_login;
+    private TextView       register_TXT_login;
     private ProgressBar register_PGB_pgb;
     private Account account;
-    private Set<Account> set = null;
-    Map<String, Object> list = null;
+    private Set<Account> set=null;
+    Map<String,Object> list = null;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore fStore;
     private FirebaseDatabase database;
     private String userID;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,13 +60,13 @@ public class RegisterActivity extends AppCompatActivity {
         findViews();
         register_PGB_pgb.setVisibility(View.GONE);
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth= FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         fStore = FirebaseFirestore.getInstance();
         register_BTN_create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signup();
+               signup();
             }
         });
         register_TXT_login.setOnClickListener(new View.OnClickListener() {
@@ -83,11 +83,11 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void findViews() {
-        register_EDT_name = findViewById(R.id.register_EDT_name);
-        register_EDT_email = findViewById(R.id.register_EDT_email);
-        register_EDT_password = findViewById(R.id.register_EDT_password);
-        register_BTN_create = findViewById(R.id.register_BTN_create);
-        register_TXT_login = findViewById(R.id.register_TXT_login);
+        register_EDT_name=findViewById(R.id.register_EDT_name);
+        register_EDT_email=findViewById(R.id.register_EDT_email);
+        register_EDT_password= findViewById(R.id.register_EDT_password);
+        register_BTN_create=findViewById(R.id.register_BTN_create);
+        register_TXT_login =findViewById(R.id.register_TXT_login);
         register_PGB_pgb = findViewById(R.id.register_PGB_pgb);
     }
 
@@ -99,15 +99,15 @@ public class RegisterActivity extends AppCompatActivity {
 
     private Account createAccount() {
 
-        String name = register_EDT_name.getText().toString();
-        String email = register_EDT_email.getText().toString();
-        String password = register_EDT_password.getText().toString();
+        String name=register_EDT_name.getText().toString();
+        String email= register_EDT_email.getText().toString();
+        String password= register_EDT_password.getText().toString();
 
 
-        Account user = new Account(name, email, password, null);
+        Account user = new Account(name,email,password,null);
 
         Log.d("johny", "createAccount: create acounts success " + user.getName());
-        return user;
+        return  user;
     }
 
     public void checkValueOfEDT(EditText name, EditText password, EditText email) {
@@ -120,8 +120,10 @@ public class RegisterActivity extends AppCompatActivity {
         if (isEmail(email) == false) {
             email.setError("Enter valid email!");
         }
-
+   
     }
+
+
 
 
     public void signup() {
@@ -132,46 +134,50 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         register_BTN_create.setEnabled(false);
-        register_PGB_pgb.setVisibility(View.VISIBLE);
+            register_PGB_pgb.setVisibility(View.VISIBLE);
         account = createAccount();
         Log.d("johny", "signup:  account tours is" + account.getTours());
 
-        firebaseAuth.createUserWithEmailAndPassword(account.getEmail(), account.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuth.createUserWithEmailAndPassword(account.getEmail(),account.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "User created in FB", Toast.LENGTH_SHORT).show();
-                    userID = firebaseAuth.getCurrentUser().getUid();
+            if(task.isSuccessful())
+            {
+                Toast.makeText(getApplicationContext(),"User created in FB",Toast.LENGTH_SHORT).show();
+                userID = firebaseAuth.getCurrentUser().getUid();
 
-                    //-------- insert to Cloud FireBase --> the set of every account with unique userID---------------- //
-                    DatabaseReference myDataRef = database.getReference("users");
-                    account.getTours().add(new Tour(null, 7, "s", "ss", 7));
-                    myDataRef.child(userID).setValue(account);
+                //-------- insert to Cloud FireBase --> the set of every account with unique userID---------------- //
+                DatabaseReference myDataRef = database.getReference("users");
+                account.getTours().add(new Tour(null,7,"s","ss",7,"0"));
+                myDataRef.child(userID).setValue(account);
 
 
-                    //-------- insert to Cloud FireStore --> the set of every account with unique userID---------------- //
-                    DocumentReference myRef = fStore.collection("users").document(userID);
-                    myRef.set(account).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("johny", "onSuccess: account upload to firestore");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d("johny", "onFailure: failed upload to firestore");
 
-                        }
-                    });
-                    onSignupSuccess();
-                } else {
-                    onSignupFailed();
-                }
+                //-------- insert to Cloud FireStore --> the set of every account with unique userID---------------- //
+                 DocumentReference myRef = fStore.collection("users").document(userID);
+                 myRef.set(account).addOnSuccessListener(new OnSuccessListener<Void>() {
+                     @Override
+                     public void onSuccess(Void aVoid) {
+                         Log.d("johny", "onSuccess: account upload to firestore");
+                     }
+                 }).addOnFailureListener(new OnFailureListener() {
+                     @Override
+                     public void onFailure(@NonNull Exception e) {
+                         Log.d("johny", "onFailure: failed upload to firestore");
+
+                     }
+                 });
+                onSignupSuccess();
+            }
+            else {
+                onSignupFailed();
+            }
 
             }
         });
 
     }
+
 
 
     public void onSignupSuccess() {

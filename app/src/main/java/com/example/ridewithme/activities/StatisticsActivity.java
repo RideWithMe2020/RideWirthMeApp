@@ -1,10 +1,10 @@
 package com.example.ridewithme.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ridewithme.Classes.Account;
 import com.example.ridewithme.Classes.Tour;
@@ -70,7 +70,8 @@ public class StatisticsActivity extends AppCompatActivity {
         ArrayList<Tour> tours = account.getTours();
         ArrayList<BarEntry> stats = new ArrayList<>();
         for (int i = 0; i <= tours.size() - 1; i++) {
-            stats.add(new BarEntry((float) tours.get(i).getTime_in_minutes(), (float) tours.get(i).getKm()));
+            float km = Float.parseFloat(tours.get(i).getKm());
+            stats.add(new BarEntry((float) tours.get(i).getTime_in_minutes(), km));
         }
 
         BarDataSet barDataSet = new BarDataSet(stats, "KM");

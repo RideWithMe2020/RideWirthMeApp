@@ -1,6 +1,5 @@
 package com.example.ridewithme.activities;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -35,7 +34,6 @@ import com.akexorcist.googledirection.model.Route;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.example.ridewithme.Classes.Account;
 import com.example.ridewithme.Classes.Tour;
-import com.example.ridewithme.Classes.UserListTours;
 import com.example.ridewithme.LocationService;
 import com.example.ridewithme.R;
 
@@ -49,12 +47,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
@@ -68,17 +61,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.SetOptions;
 import com.google.gson.Gson;
 import com.google.android.libraries.places.api.model.Place;
 
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -87,6 +77,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -98,10 +90,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private String serverKey = "AIzaSyCI-4RaDocwneRsw2ryTRPMf7NzGV-F1CE"; // Api Key For Google Direction API \\
     private GoogleMap mMap;
     private MarkerOptions place1, place2;
-    private FloatingActionButton map_BTN_directions, map_BTN_gps, map_BTN_start, map_BTN_stop, map_BTN_state_elite, map_BTN_pause;
+    private FloatingActionButton map_BTN_directions, map_BTN_gps, map_BTN_start, map_BTN_stop, map_BTN_state_elite,
+            map_BTN_start_timer,map_BTN_pause;
     private AutocompleteSupportFragment autocompleteFragment;
     private EditText map_EDT_place_autocomplete;
-    private TextView map_LBL_distance, map_LBL_time;
+    private TextView map_LBL_distance, map_LBL_time,map_LBL_timer;
     private LocalBroadcastManager localBroadcastManager;
     private ImageView map_IMG_zoomIn, map_IMG_zoomOut;
     public static final String BROADCAST_NEW_LOCATION_DETECTED = "com.example.ridewithme.NEW_LOCATION_DETECTED";
@@ -113,7 +106,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private FirebaseFirestore fStore;
     private FirebaseDatabase database;
     private Account account;
-
+    private boolean end_tour = false;
+    private boolean start_timer = false;
+    private float kilometer = 0;
+    //-----------DATE//////////////////
+    private String dateFormat = "";
+    Calendar calendar;
+    SimpleDateFormat simpleDateFormat;
+    private Date my_date;
+    String distance;
+    String duration;
+    private int counter=0;
     //////////////////////////variables////////////////
 
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
@@ -124,8 +127,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 try {
                     MyLoc lastLocation = new Gson().fromJson(json, MyLoc.class);
                     location = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+                    //avg_Speed+=lastLocation.getSpeed();
                     sourceLocation = getCompleteAddressString(lastLocation.getLatitude(), lastLocation.getLongitude());
-                    newLocation(lastLocation);
+                    if(!start_timer)
+                    {
+                        newLocation(lastLocation);
+                        map_BTN_start_timer.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                timerIsOn();// method to run the timer on ui thread
+                            }
+                        });
+                        /// end of the tour////
+                        if(location==destination)
+                        {
+                            createCustomFinishTour();
+                            myTour.setTime_in_minutes(counter);
+                            double total_km  = (Double.parseDouble(distance)/counter);
+                            myTour.setAvg_speed(total_km);
+                            finish();
+
+                        }
+
+                    }
                     //  myTour.addAvg_speed(lastLocation.getSpeed());
                 } catch (Exception ex) {
                     Log.d("johny", "onReceive: " + ex.toString());
@@ -133,6 +157,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
     };
+
+    private void timerIsOn() {
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                counter++;
+
+                // Return to UI Thread
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        map_LBL_timer.setText("timer: " + counter);
+                    }
+                });
+
+            }
+        }, 0, 1000);
+    }
+
+    private void createCustomFinishTour() {
+    }
 
 
     //
@@ -164,12 +209,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         fStore = FirebaseFirestore.getInstance();
         database = FirebaseDatabase.getInstance();
         map_BTN_stop.setClickable(false);
-        if (account != null)
-            Log.d("johny", "onCreate: " + account.getName() + account.getTours());
+        map_BTN_start_timer.setVisibility(View.GONE);
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map_MAP_google_map);
         mapFragment.getMapAsync(this);
         //addTourToFB();
+    }
+
+
+    private String getDateFormat()
+    {
+        String date;
+        calendar = Calendar.getInstance();
+        simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        date = simpleDateFormat.format(calendar.getTime());
+        Log.d("johny", "getDateFormat: date = " + date);
+        return date;
     }
 
     private void getUserFromFB() {
@@ -177,9 +232,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //-------- insert to Cloud FireStore -----------////////////////
         String userID = firebaseAuth.getCurrentUser().getUid();
         Log.d("johny", "getUserFromFB: userID =  " + userID);
-        final DocumentReference myRef = fStore.collection("tours").document(userID);
+        /*final DocumentReference myRef = fStore.collection("tours").document(userID);
         Map<String, Object> updates = new HashMap<>();
-        updates.put(userID, myTour);
+        updates.put(userID, myTour);*/
        /* myRef.update(updates, FieldValue.arrayUnion(updates)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -197,51 +252,28 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 // whenever data at this location is updated.
                 //Tour tour = dataSnapshot.getValue(Tour.class);
                 account = dataSnapshot.getValue(Account.class);
+                if (account != null)
+                    Log.d("johny", "onDataChange: name is " + account.getName());
                 // tours.add(myTour);
                 account.getTours().add(myTour);
-                addTourToFB();
+                addTourToFB(account);
                 Log.d("johny", "onDataChange: dest is " + account.getTours().get(1).getDest());
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
-                Log.w("pttt", "Failed to read value.", error.toException());
+                Log.d("johny", "Failed to read value.", error.toException());
             }
         });
 
-        // myRef.update(updates);
-        /*        myRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        ArrayList<Tour> tours = document.toObject(UserListTours.class).all_Tours;
-                        tours.add(myTour);
-                        myRef.set(tours);
-                        //Use the the list
-                    }
-                }
-            }
-        });*/
-        // myRef.update(updates);
-        //fStore.collection("users/tours").document(userID).set(updates);
-        /*myRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                //ArrayList<Tour> tours = value.toObject(UserListTours.class).all_Tours;
-                // tours.add(myTour);
-                account = value.toObject(Account.class);
-                    account.addToursToList(myTour);
-                  //  myRef.set(account);
-            }
-        });*/
+
     }
 
     //
-    private void addTourToFB() {
+    private void addTourToFB(Account account) {
         String userID = firebaseAuth.getCurrentUser().getUid();
+        Log.d("johny", "addTourToFB: id = " + userID);
         //-------- insert to Cloud Firebase --> the set of every account with unique userID---------------- //
         DatabaseReference myDataRef = database.getReference("users");
         myDataRef.child(userID).setValue(account);
@@ -326,6 +358,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         } else if (view.getTag().toString().equals("direction")) {
 
             getDestinationInfo(destination);
+            map_BTN_start_timer.setVisibility(View.VISIBLE);
+            start_timer=true;
+
         } else if (view.getTag().toString().equals("elite")) {
             changeMapType();
 
@@ -359,7 +394,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             if (resultCode == RESULT_OK) {
                 createTour();
                 addDestPlaceInMap(data);
-
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
@@ -373,8 +407,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void createTour() {
-        Date currentTime = Calendar.getInstance().getTime();
-        myTour = new Tour(currentTime, 0, sourceLocation, null, 0);
+        dateFormat = getDateFormat();
+        Log.d("johny", "createTour: date = " + dateFormat);
+        myTour = new Tour(dateFormat, 0, sourceLocation, null, 0,distance);
+        Log.d("johny", "createTour: km is " + myTour.getKm());
     }
 
     private void addDestPlaceInMap(Intent data) {
@@ -387,7 +423,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         String dest = getCompleteAddressString(destination.latitude, destination.longitude);
         myTour.setDest(dest);
         Log.d("johny", "addDestPlaceInMap:  dest is " + myTour.getDest());
-        //  getUserFromFB();
+
+       // getUserFromFB();
         map_EDT_place_autocomplete.setText(place.getAddress());
         place2 = new MarkerOptions().position(place.getLatLng()).title("Dest");
         mMap.addMarker(place2);
@@ -443,6 +480,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         map_BTN_pause = findViewById(R.id.map_BTN_pause);
         map_IMG_zoomIn = findViewById(R.id.map_IMG_zoomIn);
         map_IMG_zoomOut = findViewById(R.id.map_IMG_zoomOut);
+        map_BTN_start_timer= findViewById(R.id.map_BTN_start_timer);
+        map_LBL_timer = findViewById(R.id.map_LBL_timer);
     }
 
     private void getDestinationInfo(LatLng latLngDestination) {
@@ -464,11 +503,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             Leg leg = route.getLegList().get(0);
                             Info distanceInfo = leg.getDistance();
                             Info durationInfo = leg.getDuration();
-                            String distance = distanceInfo.getText();
-                            String duration = durationInfo.getText();
-
+                             distance = distanceInfo.getText();
+                             duration = durationInfo.getText();
+                            myTour.setKm(distance);
+                            Log.d("johny", "onDirectionSuccess: km is " + myTour.getKm());
                             //------------Displaying Distance and Time-----------------\\
                             showingDistanceTime(distance, duration); // Showing distance and time to the user in the UI \\
+                           //kilometer = Float.valueOf(distance);
 
                             //--------------Drawing Path-----------------\\
                             ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
@@ -577,6 +618,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         map_BTN_stop.setClickable(false);
         actionToService(LocationService.STOP_FOREGROUND_SERVICE);
         validateButtons();
+        finishTour();
+    }
+
+    private void finishTour() {
+        myTour.setTime_in_minutes(counter);
+        double total_km  = (Double.parseDouble(distance)/counter);
+        myTour.setAvg_speed(total_km);
+        Log.d("johny", "finishTour: " + myTour.getAvg_speed() + myTour.getDest());
+        getUserFromFB();
+        createCustomFinishTour();
     }
 
     private void actionToService(String action) {
