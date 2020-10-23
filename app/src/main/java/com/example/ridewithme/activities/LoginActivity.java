@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ridewithme.R;
-import com.example.ridewithme.StartUp;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -55,15 +54,16 @@ public class LoginActivity extends AppCompatActivity {
         return (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches());
     }
     private boolean checkVaildLBl(EditText email, EditText password) {
-        if (isEmpty(password) || password.length() < 4 || password.length() > 10) {
-            password.setError("between 4 and 10 alphanumeric characters");
+        if(isEmail(email) == false || isEmpty(email))
+        {
+            email.setError("Enter valid email!");
             return false;
         }
-
-        if (isEmail(email) == false || isEmpty(email)) {
-            email.setError("Enter valid email!");
+        else if (isEmpty(password) || password.length() < 4 || password.length() > 10  ) {
+            password.setError("between 4 and 10 alphanumeric characters");
         return false;
         }
+
         return  true;
     }
 
@@ -77,7 +77,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void buttonClicked(View view) {
 
-        Log.d("johny", "buttonClicked: clicked " + view.getTag().toString());
 
         if (view.getTag().toString().equals("login")) {
             checkUserValid();

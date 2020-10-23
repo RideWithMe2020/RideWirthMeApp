@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_weight="1"
     android:orientation="vertical"
-    tools:context=".StartUp">
+    tools:context=".activities.StartUp">
 
 
     <LinearLayout
@@ -15,6 +15,19 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         >
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/Start_BTN_logout"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_logout"
+            android:tag="logout"
+            android:text="Sign out"
+            android:textColor="#0D0C0E"
+            android:textSize="20sp"
+            app:iconTint="#110E15" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/Start_BTN_bikeRide"

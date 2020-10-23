@@ -1,17 +1,15 @@
-package com.example.ridewithme;
+package com.example.ridewithme.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
-import com.example.ridewithme.activities.GoalActivity;
-import com.example.ridewithme.activities.HistoryActivity;
-import com.example.ridewithme.activities.MapActivity;
-import com.example.ridewithme.activities.SettingsActivity;
-import com.example.ridewithme.activities.StatisticsActivity;
+import com.example.ridewithme.R;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class StartUp extends AppCompatActivity {
 
@@ -20,6 +18,7 @@ public class StartUp extends AppCompatActivity {
     private MaterialButton Start_BTN_history;
     private MaterialButton Start_BTN_statistics;
     private MaterialButton Start_BTN_settings;
+    private MaterialButton Start_BTN_logout;
 
 
     @Override
@@ -43,7 +42,7 @@ public class StartUp extends AppCompatActivity {
         Start_BTN_history.setOnClickListener(buttonClickListener);
         Start_BTN_statistics.setOnClickListener(buttonClickListener);
         Start_BTN_settings.setOnClickListener(buttonClickListener);
-
+        Start_BTN_logout.setOnClickListener(buttonClickListener);
 
 
     }
@@ -71,6 +70,17 @@ public class StartUp extends AppCompatActivity {
         if(view.getTag().toString().equals("settings")){
             settingsActivity();
         }
+        if(view.getTag().toString().equals("logout"))
+        {
+            logoutFromFB();
+        }
+    }
+
+    private void logoutFromFB() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+        Toast.makeText(getApplicationContext(),"Sign out From Ride With Me App" , Toast.LENGTH_SHORT);
+        finish();
     }
 
     private void settingsActivity() {
@@ -104,6 +114,7 @@ public class StartUp extends AppCompatActivity {
         Start_BTN_history = findViewById(R.id.Start_BTN_history);
         Start_BTN_statistics = findViewById(R.id.Start_BTN_statistics);
         Start_BTN_settings = findViewById(R.id.Start_BTN_settings);
+        Start_BTN_logout = findViewById(R.id.Start_BTN_logout);
     }
 
 

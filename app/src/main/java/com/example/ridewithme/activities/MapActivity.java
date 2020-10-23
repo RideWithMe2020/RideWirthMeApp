@@ -56,6 +56,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.common.base.Stopwatch;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -99,7 +100,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private final int LOCATION_PERMISSIONS_REQUEST_CODE = 125;
     private String serverKey = "AIzaSyCI-4RaDocwneRsw2ryTRPMf7NzGV-F1CE"; // Api Key For Google Direction API \\
     private GoogleMap mMap;
-    private MarkerOptions place2;
+    private MarkerOptions place_for_serach;
     private FloatingActionButton map_BTN_directions, map_BTN_gps, map_BTN_start, map_BTN_stop, map_BTN_state_elite,
             map_BTN_start_timer,map_BTN_pause;
     private AutocompleteSupportFragment autocompleteFragment;
@@ -116,17 +117,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private FirebaseFirestore fStore;
     private FirebaseDatabase database;
     private Account account;
-    private boolean end_tour = false;
     private boolean start_timer = false;
     private boolean pause_timer = false;
     private float kilometer = 0;
     private double distanceByKm = 0;
     //-----------DATE//////////////////
     private String dateFormat = "";
-    Calendar calendar;
-    SimpleDateFormat simpleDateFormat;
-    String distance;
-    String duration;
+    private Calendar calendar;
+    private SimpleDateFormat simpleDateFormat;
+    private String distance;
+    private String duration;
     private int counter=0;
     private int count_speed =0;
     //////////////////////////variables////////////////
@@ -142,16 +142,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     sourceLocation = getCompleteAddressString(lastLocation.getLatitude(), lastLocation.getLongitude());
                     avg_Speed+=lastLocation.getSpeed();
                     count_speed++;
-                    if(!start_timer)
-                    {
-                        map_BTN_start_timer.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                timerIsOn();// method to run the timer on ui thread
-                            }
-                        });
-                    }
-                } catch (Exception ex) {
+
+                                    } catch (Exception ex) {
                     Log.d("johny", "onReceive: " + ex.toString());
                 }
             }
@@ -194,17 +186,31 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         findViews();
         askLocationPermissions();
         init();
+        map_BTN_start_timer.setVisibility(View.GONE);
+        if(!start_timer)
+          {
+              map_BTN_start_timer.setOnClickListener(new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
+                      start_timer=true;
+                      pause_timer=false;
+                      timerIsOn();// method to run the timer on ui thread
+                  }
+              });
+
+
+
+         }
+
         firebaseAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         database = FirebaseDatabase.getInstance();
         map_BTN_stop.setClickable(false);
-        map_BTN_start_timer.setVisibility(View.GONE);
         addPIcWithGlide();
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map_MAP_google_map);
         mapFragment.getMapAsync(this);
     }
-
 
     private String getDateFormat()
     {
@@ -307,18 +313,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (view.getTag().toString().equals("start")) {
             startService();
         } else if (view.getTag().toString().equals("stop")) {
-            distanceByKm =  distanceBetween(location,destination);
-            Log.d("johny", "buttonClicked stop: distanceByKm  is " + distanceByKm);
             stopService();
             validateButtons();
             start_timer=false;
         } else if (view.getTag().toString().equals("pause")) {
             pauseService();
         } else if (view.getTag().toString().equals("direction")) {
+            if(destination!=null)
+            {
+                getDestinationInfo(destination);
+                map_BTN_start_timer.setVisibility(View.VISIBLE);
+                start_timer=true;
+            }
 
-            getDestinationInfo(destination);
-            map_BTN_start_timer.setVisibility(View.VISIBLE);
-            start_timer=true;
 
         } else if (view.getTag().toString().equals("elite")) {
             changeMapType();
@@ -337,7 +344,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             mMap.animateCamera(CameraUpdateFactory.zoomOut());
 
         }
-//
+
     }
     private static Double distanceBetween(LatLng point1, LatLng point2) {
         if (point1 == null || point2 == null) {
@@ -424,8 +431,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         String dest = getCompleteAddressString(destination.latitude, destination.longitude);
         myTour.setDest(dest);
         map_EDT_place_autocomplete.setText(place.getAddress());
-        place2 = new MarkerOptions().position(place.getLatLng()).title("Dest");
-        mMap.addMarker(place2);
+        place_for_serach = new MarkerOptions().position(place.getLatLng()).title("Dest");
+        mMap.addMarker(place_for_serach);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
     }
 
@@ -482,7 +489,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void getDestinationInfo(LatLng latLngDestination) {
-        // progressDialog();
         final LatLng origin = location;
         final LatLng destination = latLngDestination;
         //-------------Using AK Exorcist Google Direction Library---------------\\
@@ -493,7 +499,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .execute(new DirectionCallback() {
                     @Override
                     public void onDirectionSuccess(Direction direction, String rawBody) {
-                        //  dismissDialog();
                         String status = direction.getStatus();
                         if (status.equals(RequestResult.OK)) {
                             Route route = direction.getRouteList().get(0);
@@ -590,6 +595,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.d("stas", "start Service ");
         map_BTN_stop.setClickable(true);
         map_BTN_pause.setClickable(true);
+
         actionToService(LocationService.START_FOREGROUND_SERVICE);
         validateButtons();
     }
@@ -613,13 +619,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void finishTour() {
         myTour.setTime_in_minutes(counter);
-        Log.d("johny", "finishTour: distance string by km is " + distance);
         String[] km = distance.split(" ");
         double total_km = Double.parseDouble(km[0]);
-        Log.d("johny", "finishTour: double by km is " + total_km);
         myTour.setKm(total_km);
-        Log.d("johny", "finishTour: km is " + myTour.getKm());
-        //double avg_km  = (total_km/counter);
         myTour.setAvg_speed(avg_Speed/count_speed);
         Log.d("johny", "finishTour: " + myTour.getAvg_speed() + myTour.getDest());
         getUserFromFB();
