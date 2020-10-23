@@ -117,6 +117,18 @@ public class StartUp extends AppCompatActivity {
         Start_BTN_logout = findViewById(R.id.Start_BTN_logout);
     }
 
-
-
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//    }
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//    }
 }

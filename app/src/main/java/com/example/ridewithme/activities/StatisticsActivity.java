@@ -53,7 +53,9 @@ public class StatisticsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 account = dataSnapshot.getValue(Account.class);
-                getStatsFB(account);
+                if(account.getTours() != null){
+                    getStatsFB(account);
+                }
             }
 
             @Override
